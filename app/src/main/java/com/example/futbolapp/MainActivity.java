@@ -1,30 +1,32 @@
 package com.example.futbolapp;
 
+import static com.mongodb.client.model.Filters.eq;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 
-
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.navigation.NavigationView;
-
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.futbolapp.databinding.ActivityMainBinding;
-import com.google.gson.Gson;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Sorts;
+
+import org.bson.Document;
+import org.bson.conversions.Bson;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -73,67 +75,8 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    public class MyAsyncTask extends AsyncTask<Void, Void, String> {
-        private String pUrl;
-        public MyAsyncTask(String url) {
-            pUrl = url;
-        }
-        @Override
-        protected String doInBackground(Void... voids) {
-            try {
-                URL url = null;
-                try {
-                    url = new URL(pUrl);
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("Authorization", "Bearer bba9aba98f4a4a979f0000dfb827ec55");
-                conn.setRequestMethod("GET");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                String line;
-                StringBuilder response = new StringBuilder();
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
-                reader.close();
-                conn.disconnect();
-                String emaitzaString = response.toString();
-
-                // Parsear la respuesta JSON con GSON
-                Gson gson = new Gson();
-                MyObject myObject = gson.fromJson(emaitzaString, MyObject.class);
 
 
-                return myObject.toString();
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Gson gson = new Gson();/*
-            MyObject myObject = gson.fromJson(result, MyObject.class);
-            String homeTeamName = MyObject.matches(0);
-            String awayTeamName = match.getAwayTeam().getName();
-            String homeScore = String.valueOf(match.getScore().getFullTime().getHome());
-            String awayScore = String.valueOf(match.getScore().getFullTime().getAway());
-
-            String resultado = homeTeamName + " " + homeScore + " : " + awayScore + " " + awayTeamName;
-*/
-        }
-    }
-
-
-    public void getFromAPI(String pUrl) throws IOException {
-        MyAsyncTask asyncTask = new MyAsyncTask(pUrl);
-        asyncTask.execute();
-
-
-    }
 
 }
