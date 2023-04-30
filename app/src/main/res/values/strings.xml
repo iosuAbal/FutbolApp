@@ -12,7 +12,6 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string-array name="seasons_array">
-        <item>2022-2023</item>
         <item>2021-2022</item>
         <item>2020-2021</item>
         <item>2019-2020</item>
@@ -20,6 +19,16 @@
         <item>2017-2018</item>
         <item>2016-2017</item>
         <item>2015-2016</item>
+        <item>2014-2015</item>
+        <item>2013-2014</item>
+        <item>2012-2013</item>
+        <item>2011-2012</item>
+        <item>2010-2011</item>
+    </string-array>
+    <string-array name="competi_array">
+        <item>LaLiga</item>
+        <item>Premier League</item>
+
     </string-array>
 
 </resources>

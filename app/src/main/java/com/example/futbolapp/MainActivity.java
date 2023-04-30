@@ -28,6 +28,8 @@ import com.mongodb.client.model.Sorts;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -59,6 +61,16 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        File directory = getApplicationContext().getFilesDir();
+        String path = directory.getAbsolutePath();
+        Log.d("tag",path);
+        File director = getApplicationContext().getFilesDir();
+        File[] files = director.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                System.out.println(file.getName());
+            }
+        }
     }
 
     @Override
