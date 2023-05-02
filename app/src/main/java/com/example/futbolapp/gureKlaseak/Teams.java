@@ -1,6 +1,8 @@
 package com.example.futbolapp.gureKlaseak;
 
-public class Teams {
+import io.realm.RealmObject;
+
+public class Teams extends RealmObject {
     private Home home;
     private Away away;
 

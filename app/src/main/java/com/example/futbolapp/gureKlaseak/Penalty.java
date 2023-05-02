@@ -1,6 +1,8 @@
 package com.example.futbolapp.gureKlaseak;
 
-public class Penalty {
+import io.realm.RealmObject;
+
+public class Penalty extends RealmObject {
     private Integer home;
     private Integer away;
 

@@ -26,6 +26,10 @@ import com.example.futbolapp.R;
 import java.io.IOException;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
+
 public class SeasonsFragment extends Fragment {
 
 
@@ -63,37 +67,19 @@ public class SeasonsFragment extends Fragment {
                 params.setMargins(0, 20, 0, 0);
                 String urtea= selectedItem.split("-")[0];
                 String competi=spinnerCompetitions.getSelectedItem().toString().split(" ")[0];
-                List<Match> partidoak;
-                try {
-                    partidoak = DataAccess.getMatchesFromJson(urtea, competi);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                Log.d("tag", partidoak.toString());
+
+                Realm.init(getActivity());
+                String realmName = "applicationdb-ejnwi";
+                RealmConfiguration config = new RealmConfiguration.Builder().name(realmName).build();
+                Realm backgroundThreadRealm = Realm.getInstance(config);
+                RealmResults<Match> partidoGuztiak = backgroundThreadRealm.where(Match.class).beginsWith("fixture.date", urtea).findAll();
+                List<Match> partidoak = backgroundThreadRealm.copyFromRealm(partidoGuztiak);
+
+
                 for (Match partido: partidoak) {
-                    String result= partido.getTeams().getHome().getName()+" "+partido.getScore().getFulltime().getHome()
-                            +" - "+
-                            partido.getScore().getFulltime().getAway()+"  "+ partido.getTeams().getAway().getName();
-                    TextView textView = new TextView(getContext());
-                    GradientDrawable shape = new GradientDrawable();
-                    shape.setColor(Color.LTGRAY);
-                    shape.setCornerRadius(18);
-                    textView.setBackground(shape);
-                    textView.setTextColor(Color.BLACK);
-                    textView.setTypeface(null, Typeface.BOLD);
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
-                    textView.setLayoutParams(params);
-                    textView.setWidth((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 330,
-                            getResources().getDisplayMetrics()));
-                    textView.setText(result);
-                    linearLayout.addView(textView);
-
-
-
+                    printMatch(params, partido);
                 }
-
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // No se hace nada si no se selecciona nada
@@ -102,8 +88,24 @@ public class SeasonsFragment extends Fragment {
         return rootView;
     }
 
-
-
+    private void printMatch(LinearLayout.LayoutParams params, Match partido) {
+        String result= partido.getTeams().getHome().getName()+" "+ partido.getScore().getFulltime().getHome()
+                +" - "+
+                partido.getScore().getFulltime().getAway()+"  "+ partido.getTeams().getAway().getName();
+        TextView textView = new TextView(getContext());
+        GradientDrawable shape = new GradientDrawable();
+        shape.setColor(Color.LTGRAY);
+        shape.setCornerRadius(18);
+        textView.setBackground(shape);
+        textView.setTextColor(Color.BLACK);
+        textView.setTypeface(null, Typeface.BOLD);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+        textView.setLayoutParams(params);
+        textView.setWidth((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 330,
+                getResources().getDisplayMetrics()));
+        textView.setText(result);
+        linearLayout.addView(textView);
+    }
 
 
 }

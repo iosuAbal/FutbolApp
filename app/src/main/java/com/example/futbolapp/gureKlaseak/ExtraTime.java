@@ -1,6 +1,8 @@
 package com.example.futbolapp.gureKlaseak;
 
-public class ExtraTime {
+import io.realm.RealmObject;
+
+public class ExtraTime  extends RealmObject {
     private Integer home;
     private Integer away;
 

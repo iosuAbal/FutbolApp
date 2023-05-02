@@ -1,6 +1,8 @@
 package com.example.futbolapp.gureKlaseak;
 
-public class FullTime {
+import io.realm.RealmObject;
+
+public class FullTime extends RealmObject {
     private int home;
     private int away;
 

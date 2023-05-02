@@ -1,11 +1,19 @@
 package com.example.futbolapp.gureKlaseak;
 
-public class Match {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
+
+public class Match extends RealmObject {
+
     private Fixture fixture;
     private League league;
+
     private Teams teams;
     private Goals goals;
+
     private Score score;
+
 
     public Fixture getFixture() {
         return fixture;

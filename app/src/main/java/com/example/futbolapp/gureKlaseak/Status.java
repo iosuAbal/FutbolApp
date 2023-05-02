@@ -1,6 +1,8 @@
 package com.example.futbolapp.gureKlaseak;
 
-public class Status {
+import io.realm.RealmObject;
+
+public class Status extends RealmObject {
     private String longStatus;
     private String shortStatus;
     private Integer elapsed;

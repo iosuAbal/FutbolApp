@@ -1,6 +1,6 @@
 package com.example.futbolapp;
 
-import static com.mongodb.client.model.Filters.eq;
+import static android.content.ContentValues.TAG;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,19 +16,26 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.futbolapp.databinding.ActivityMainBinding;
+import com.example.futbolapp.gureKlaseak.Match;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Projections;
-import com.mongodb.client.model.Sorts;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,16 +68,8 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        File directory = getApplicationContext().getFilesDir();
-        String path = directory.getAbsolutePath();
-        Log.d("tag",path);
-        File director = getApplicationContext().getFilesDir();
-        File[] files = director.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                System.out.println(file.getName());
-            }
-        }
+
+
     }
 
     @Override
