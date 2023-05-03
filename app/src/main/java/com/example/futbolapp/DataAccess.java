@@ -16,6 +16,7 @@ public class DataAccess {
 
 
 
+
         String filePath ="/data/user/0/com.example.futbolapp/files/"+competi+".json";
 
         Gson gson = new Gson();

@@ -2,7 +2,7 @@ package com.example.futbolapp.gureKlaseak;
 
 import io.realm.RealmObject;
 
-public class Score extends RealmObject {
+public class Score {
     private HalfTime halftime;
     private FullTime fulltime;
     private ExtraTime extratime;

@@ -2,7 +2,7 @@ package com.example.futbolapp.gureKlaseak;
 
 import io.realm.RealmObject;
 
-public class ExtraTime  extends RealmObject {
+public class ExtraTime {
     private Integer home;
     private Integer away;
 

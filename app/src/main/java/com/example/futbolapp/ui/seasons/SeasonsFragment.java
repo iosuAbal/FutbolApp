@@ -1,5 +1,7 @@
 package com.example.futbolapp.ui.seasons;
 
+import static com.example.futbolapp.DataAccess.getMatchesFromJson;
+
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -67,13 +69,13 @@ public class SeasonsFragment extends Fragment {
                 params.setMargins(0, 20, 0, 0);
                 String urtea= selectedItem.split("-")[0];
                 String competi=spinnerCompetitions.getSelectedItem().toString().split(" ")[0];
+                List<Match> partidoak;
 
-                Realm.init(getActivity());
-                String realmName = "applicationdb-ejnwi";
-                RealmConfiguration config = new RealmConfiguration.Builder().name(realmName).build();
-                Realm backgroundThreadRealm = Realm.getInstance(config);
-                RealmResults<Match> partidoGuztiak = backgroundThreadRealm.where(Match.class).beginsWith("fixture.date", urtea).findAll();
-                List<Match> partidoak = backgroundThreadRealm.copyFromRealm(partidoGuztiak);
+                try {
+                    partidoak=getMatchesFromJson(urtea,competi);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
 
                 for (Match partido: partidoak) {

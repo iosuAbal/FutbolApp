@@ -2,7 +2,7 @@ package com.example.futbolapp.gureKlaseak;
 
 import io.realm.RealmObject;
 
-public class Periods extends RealmObject {
+public class Periods {
     private Integer first;
     private Integer second;
 
