@@ -44,7 +44,6 @@ public class SeasonsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_seasons, container, false);
-        linearLayout = rootView.findViewById(R.id.myLinearLayout);
 
         spinnerYears = rootView.findViewById(R.id.spinnerYears);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.seasons_array, android.R.layout.simple_spinner_item);

@@ -19,23 +19,10 @@ import com.example.futbolapp.databinding.ActivityMainBinding;
 import com.example.futbolapp.gureKlaseak.Match;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.example.futbolapp.R;
+
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 
-import org.bson.Document;
-import org.bson.conversions.Bson;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -85,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
 
 
 
