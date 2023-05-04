@@ -59,7 +59,9 @@ public class SeasonsFragment extends Fragment {
         spinnerYears.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                linearLayout = rootView.findViewById(R.id.myLinearLayout);
                 String selectedItem = parent.getItemAtPosition(position).toString();
+
                 linearLayout.removeAllViews();
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,

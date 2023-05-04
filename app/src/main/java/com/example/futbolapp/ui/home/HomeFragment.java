@@ -5,9 +5,11 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,6 +22,7 @@ import com.example.futbolapp.R;
 import com.example.futbolapp.databinding.FragmentHomeBinding;
 import com.example.futbolapp.gureKlaseak.Match;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +33,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
@@ -61,7 +67,7 @@ public class HomeFragment extends Fragment {
         final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
-
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         //-----
         partidoak = null;
         while (partidoak == null) {
@@ -115,8 +121,21 @@ public class HomeFragment extends Fragment {
                 +" - "+
                 partido.getScore().getFulltime().getAway()+"  "+ partido.getTeams().getAway().getName();
         if (partido.getFixture().getStatus().getElapsed()<90){
-            result=result+ "  LIVE min("+partido.getFixture().getStatus().getElapsed()+")";
+            result=result+ "\n  LIVE min("+partido.getFixture().getStatus().getElapsed()+")";
         }
+        LinearLayout layoutHorizontal = new LinearLayout(getContext());
+        layoutHorizontal.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        layoutHorizontal.setOrientation(LinearLayout.HORIZONTAL);
+        ImageView homePic = new ImageView(getContext());
+        LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(100,100);
+        params.gravity= Gravity.CENTER;
+        homePic.setLayoutParams(imageParams);
+        String homeURL = partido.getTeams().getHome().getLogo();
+        Picasso.get().load(homeURL).into(homePic);
+        layoutHorizontal.addView(homePic);
         TextView textView = new TextView(getContext());
         GradientDrawable shape = new GradientDrawable();
         shape.setColor(Color.LTGRAY);
@@ -124,11 +143,18 @@ public class HomeFragment extends Fragment {
         textView.setBackground(shape);
         textView.setTextColor(Color.BLACK);
         textView.setTypeface(null, Typeface.BOLD);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         textView.setLayoutParams(params);
-        textView.setWidth((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 330,
+        textView.setWidth((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 250,
                 getResources().getDisplayMetrics()));
         textView.setText(result);
-        linearLayout.addView(textView);
+        layoutHorizontal.addView(textView);
+        ImageView awayPic = new ImageView(getContext());
+        awayPic.setLayoutParams(imageParams);
+        String awayURL = partido.getTeams().getAway().getLogo();
+        Picasso.get().load(awayURL).into(awayPic);
+        layoutHorizontal.addView(awayPic);
+        linearLayout.addView(layoutHorizontal);
     }
+
 }

@@ -1,5 +1,7 @@
 package com.example.futbolapp;
 
+import android.provider.ContactsContract;
+
 import com.example.futbolapp.gureKlaseak.Match;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
@@ -10,7 +12,13 @@ import org.json.JSONObject;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +31,7 @@ import okhttp3.Response;
 public class DataAccess {
 
     private static Match[] partidoak;
+    private static Match[] partidoakOrdenatuta;
 
     public static Match [] getMatchesFromAPI(){
 
@@ -51,7 +60,7 @@ public class DataAccess {
                     Gson gson = new Gson();
                     partidoak = gson.fromJson(jsonArr.toString(), Match[].class);
                     System.out.println("PARTIDOAK"+partidoak.toString());
-
+                    partidoakOrdenatuta = ordenarPartidosPorFecha(partidoak);
 
 
 
@@ -62,7 +71,7 @@ public class DataAccess {
 
             }
         });
-        return partidoak;
+        return partidoakOrdenatuta;
     }
 
     public static List<Match> getMatchesFromJson(String urtea,String competi) throws IOException {
@@ -80,5 +89,31 @@ public class DataAccess {
         return matches2020;
 
 
+    }
+    public static Match[] ordenarPartidosPorFecha(Match[] partidos) {
+        // Crea un nuevo formato de fecha para analizar las cadenas de fecha
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        // Crea un nuevo comparador para ordenar los partidos de más reciente a más antiguo
+        Comparator<Match> comparador = (partido1, partido2) -> {
+            try {
+                Date fecha1 = formato.parse(partido1.getFixture().getDate());
+                Date fecha2 = formato.parse(partido2.getFixture().getDate());
+                return fecha2.compareTo(fecha1);
+            } catch (ParseException e) {
+                // Manejar la excepción en caso de que la cadena no se pueda analizar
+                e.printStackTrace();
+            }
+            return 0;
+        };
+
+        // Convierte el arreglo en una lista para poder ordenarlo
+        List<Match> listaPartidos = Arrays.asList(partidos);
+
+        // Ordena la lista de partidos utilizando el comparador personalizado
+        Collections.sort(listaPartidos, comparador);
+
+        // Convierte la lista ordenada de vuelta a un arreglo y devuélvela
+        return listaPartidos.toArray(new Match[0]);
     }
 }
