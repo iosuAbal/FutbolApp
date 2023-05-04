@@ -1,14 +1,17 @@
 package com.example.futbolapp.ui.home;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -64,8 +67,7 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
         System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         //-----
@@ -117,26 +119,33 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
     private void printMatch(LinearLayout.LayoutParams params, Match partido) {
-        String result= partido.getTeams().getHome().getName()+" "+ partido.getScore().getFulltime().getHome()
+        /*String result= partido.getTeams().getHome().getName()+" "+ partido.getScore().getFulltime().getHome()
                 +" - "+
-                partido.getScore().getFulltime().getAway()+"  "+ partido.getTeams().getAway().getName();
-        if (partido.getFixture().getStatus().getElapsed()<90){
-            result=result+ "\n  LIVE min("+partido.getFixture().getStatus().getElapsed()+")";
+                partido.getScore().getFulltime().getAway()+"  "+ partido.getTeams().getAway().getName();*/
+        String homeName = partido.getTeams().getHome().getName();
+        String score = partido.getScore().getFulltime().getHome()+" - "+ partido.getScore().getFulltime().getAway();
+        String awayName = partido.getTeams().getAway().getName();
+        TextView liveView = null;
+        if (true){
+            String live ="\n  LIVE min("+partido.getFixture().getStatus().getElapsed()+")";
+            liveView = new TextView(getContext());
+            liveView.setText(live);
         }
-        LinearLayout layoutHorizontal = new LinearLayout(getContext());
-        layoutHorizontal.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
-        layoutHorizontal.setOrientation(LinearLayout.HORIZONTAL);
+
+        TextView homeNameView = new TextView(getContext());
+        homeNameView.setText(homeName);
+        TextView scoreView = new TextView(getContext());
+        scoreView.setText(score);
+        TextView awayNameView = new TextView(getContext());
+        awayNameView.setText(awayName);
         ImageView homePic = new ImageView(getContext());
         LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(100,100);
-        params.gravity= Gravity.CENTER;
+        //params.gravity= Gravity.CENTER;
         homePic.setLayoutParams(imageParams);
         String homeURL = partido.getTeams().getHome().getLogo();
         Picasso.get().load(homeURL).into(homePic);
-        layoutHorizontal.addView(homePic);
-        TextView textView = new TextView(getContext());
+
+        /*TextView textView = new TextView(getContext());
         GradientDrawable shape = new GradientDrawable();
         shape.setColor(Color.LTGRAY);
         shape.setCornerRadius(18);
@@ -147,14 +156,57 @@ public class HomeFragment extends Fragment {
         textView.setLayoutParams(params);
         textView.setWidth((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 250,
                 getResources().getDisplayMetrics()));
-        textView.setText(result);
-        layoutHorizontal.addView(textView);
+        textView.setText(result);*/
         ImageView awayPic = new ImageView(getContext());
         awayPic.setLayoutParams(imageParams);
         String awayURL = partido.getTeams().getAway().getLogo();
         Picasso.get().load(awayURL).into(awayPic);
+
+
+
+        LinearLayout layoutHorizontal = new LinearLayout(getContext());
+        layoutHorizontal.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        layoutHorizontal.setOrientation(LinearLayout.HORIZONTAL);
+
+        GradientDrawable gd = new GradientDrawable();
+        gd.setColor(Color.GREEN);  // Color de fondo del LinearLayout
+        gd.setStroke(2, Color.BLACK);  // Ancho y color del borde
+        gd.setCornerRadius(10);  // Radio de los bordes redondeados
+
+        layoutHorizontal.setBackground(gd);
+
+        layoutHorizontal.addView(homePic);
+        layoutHorizontal.addView(homeNameView);
+        layoutHorizontal.addView(scoreView);
+        layoutHorizontal.addView(awayNameView);
         layoutHorizontal.addView(awayPic);
-        linearLayout.addView(layoutHorizontal);
+        //linearLayout.addView(layoutHorizontal);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+
+        ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
+        int screenWidth = displayMetrics.widthPixels-100;
+
+
+// Establecer el ancho de cada View en función del ancho de la pantalla
+        for (int i = 0; i < layoutHorizontal.getChildCount(); i++) {
+            View child = layoutHorizontal.getChildAt(i);
+            LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) child.getLayoutParams();
+            params2.width = screenWidth / layoutHorizontal.getChildCount();
+            child.setLayoutParams(params2);
+
+        }
+
+        LinearLayout layoutVertical = new LinearLayout(getContext());
+        layoutVertical.setGravity(Gravity.CENTER_HORIZONTAL);
+        layoutVertical.addView(layoutHorizontal);
+
+            layoutVertical.addView(liveView);
+
+        linearLayout.addView(layoutVertical);
     }
 
 }
