@@ -24,6 +24,7 @@ import com.example.futbolapp.DataAccess;
 import com.example.futbolapp.R;
 import com.example.futbolapp.databinding.FragmentHomeBinding;
 import com.example.futbolapp.gureKlaseak.Match;
+import com.example.futbolapp.ui.seasons.SeasonsFragment;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -71,8 +72,13 @@ public class HomeFragment extends Fragment {
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
         System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         //-----
-        partidoak = null;
-        while (partidoak == null) {
+        try {
+            partidoak = DataAccess.getMatchesFromJson("2021", "Premier").toArray(new Match[0]);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        //partidoak = null;
+        /*while (partidoak == null) {
             partidoak = DataAccess.getMatchesFromAPI();
             if (partidoak == null) {
                 // Si el valor es nulo, esperamos 500 milisegundos antes de volver a intentarlo
@@ -82,7 +88,7 @@ public class HomeFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
-        }
+        }*/
 
         System.out.println("ha salido ..");
 
@@ -105,7 +111,7 @@ public class HomeFragment extends Fragment {
                 .filter(m->m.getFixture().getStatus().getElapsed()!=null)
                 .collect(Collectors.toList());
         System.out.println("UNEKOAK "+unekoPartidoak.toString());
-        for (Match m: unekoPartidoak){
+        for (Match m: partidoak){
             printMatch(params,m);
             System.out.println(m);
         }
@@ -126,17 +132,38 @@ public class HomeFragment extends Fragment {
         String score = partido.getScore().getFulltime().getHome()+" - "+ partido.getScore().getFulltime().getAway();
         String awayName = partido.getTeams().getAway().getName();
         TextView liveView = null;
+        ImageView livePic = null;
+        LinearLayout liveLayout = null;
         if (true){
-            String live ="\n  LIVE min("+partido.getFixture().getStatus().getElapsed()+")";
+            /*String live ="LIVE min("+partido.getFixture().getStatus().getElapsed()+")";
             liveView = new TextView(getContext());
-            liveView.setText(live);
+            liveView.setGravity(Gravity.CENTER_HORIZONTAL);
+            liveView.setText(live);*/
+            livePic = new ImageView(getContext());
+            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(150,150);
+            params.gravity= Gravity.CENTER_HORIZONTAL;
+            livePic.setLayoutParams(imageParams);
+            String liveURL = "https://static.vecteezy.com/system/resources/previews/016/314/808/original/transparent-live-transparent-live-icon-free-png.png";
+            Picasso.get().load(liveURL).into(livePic);
+            //linearLayout.addView(livePic);
+            liveLayout = new LinearLayout(getContext());
+            liveLayout.setOrientation(LinearLayout.HORIZONTAL);
+            liveLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+            liveLayout.addView(livePic);
+
         }
 
         TextView homeNameView = new TextView(getContext());
+        homeNameView.setGravity(Gravity.CENTER_HORIZONTAL);
+        homeNameView.setTextSize(16);
         homeNameView.setText(homeName);
         TextView scoreView = new TextView(getContext());
+        scoreView.setTextSize(50);
+        scoreView.setGravity(Gravity.CENTER_HORIZONTAL);
         scoreView.setText(score);
         TextView awayNameView = new TextView(getContext());
+        awayNameView.setGravity(Gravity.CENTER_HORIZONTAL);
+        awayNameView.setTextSize(16);
         awayNameView.setText(awayName);
         ImageView homePic = new ImageView(getContext());
         LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(100,100);
@@ -144,7 +171,11 @@ public class HomeFragment extends Fragment {
         homePic.setLayoutParams(imageParams);
         String homeURL = partido.getTeams().getHome().getLogo();
         Picasso.get().load(homeURL).into(homePic);
-
+        LinearLayout homeLayout = new LinearLayout(getContext());
+        homeLayout.setOrientation(LinearLayout.VERTICAL);
+        homeLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+        homeLayout.addView(homePic);
+        homeLayout.addView(homeNameView);
         /*TextView textView = new TextView(getContext());
         GradientDrawable shape = new GradientDrawable();
         shape.setColor(Color.LTGRAY);
@@ -161,7 +192,11 @@ public class HomeFragment extends Fragment {
         awayPic.setLayoutParams(imageParams);
         String awayURL = partido.getTeams().getAway().getLogo();
         Picasso.get().load(awayURL).into(awayPic);
-
+        LinearLayout awayLayout = new LinearLayout(getContext());
+        awayLayout.setOrientation(LinearLayout.VERTICAL);
+        awayLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+        awayLayout.addView(awayPic);
+        awayLayout.addView(awayNameView);
 
 
         LinearLayout layoutHorizontal = new LinearLayout(getContext());
@@ -172,19 +207,21 @@ public class HomeFragment extends Fragment {
         layoutHorizontal.setOrientation(LinearLayout.HORIZONTAL);
 
         GradientDrawable gd = new GradientDrawable();
-        gd.setColor(Color.GREEN);  // Color de fondo del LinearLayout
+        gd.setColor(Color.TRANSPARENT);  // Color de fondo del LinearLayout
         gd.setStroke(2, Color.BLACK);  // Ancho y color del borde
         gd.setCornerRadius(10);  // Radio de los bordes redondeados
 
-        layoutHorizontal.setBackground(gd);
+        //layoutHorizontal.setBackground(gd);
 
-        layoutHorizontal.addView(homePic);
-        layoutHorizontal.addView(homeNameView);
+        //layoutHorizontal.addView(homePic);
+        //layoutHorizontal.addView(homeNameView);
+        layoutHorizontal.addView(homeLayout);
         layoutHorizontal.addView(scoreView);
-        layoutHorizontal.addView(awayNameView);
-        layoutHorizontal.addView(awayPic);
+        layoutHorizontal.addView(awayLayout);
+        //layoutHorizontal.addView(awayNameView);
+        //layoutHorizontal.addView(awayPic);
         //linearLayout.addView(layoutHorizontal);
-
+        //linearLayout.addView(liveView);
         DisplayMetrics displayMetrics = new DisplayMetrics();
 
         ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
@@ -196,16 +233,22 @@ public class HomeFragment extends Fragment {
             View child = layoutHorizontal.getChildAt(i);
             LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) child.getLayoutParams();
             params2.width = screenWidth / layoutHorizontal.getChildCount();
+            params2.topMargin=15;
             child.setLayoutParams(params2);
 
         }
 
         LinearLayout layoutVertical = new LinearLayout(getContext());
-        layoutVertical.setGravity(Gravity.CENTER_HORIZONTAL);
+        layoutVertical.setOrientation(LinearLayout.VERTICAL);
+        layoutVertical.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        //layoutVertical.setGravity(Gravity.CENTER_HORIZONTAL);
+        layoutVertical.addView(liveLayout);
         layoutVertical.addView(layoutHorizontal);
 
-            layoutVertical.addView(liveView);
-
+        layoutVertical.setBackground(gd);
         linearLayout.addView(layoutVertical);
     }
 
