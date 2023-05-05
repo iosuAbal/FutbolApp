@@ -74,6 +74,11 @@ public class HomeFragment extends Fragment {
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
         System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         //-----
+        try {
+            partidoak = DataAccess.getMatchesFromJson("2021", "Premier").toArray(new Match[0]);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         partidoak = null;
         while (partidoak == null) {
             partidoak = DataAccess.getMatchesFromAPI();
@@ -87,6 +92,7 @@ public class HomeFragment extends Fragment {
             }
         }
 
+        System.out.println("ha salido ..");
 
 
 
@@ -133,7 +139,7 @@ public class HomeFragment extends Fragment {
         ImageView livePic = null;
         LinearLayout liveLayout = null;
         if (true){
-            String live ="\n  LIVE min("+partido.getFixture().getStatus().getElapsed()+")";
+            /*String live ="LIVE min("+partido.getFixture().getStatus().getElapsed()+")";
             liveView = new TextView(getContext());
             liveView.setGravity(Gravity.CENTER_HORIZONTAL);
             liveView.setText(live);*/

@@ -79,7 +79,7 @@ public class SeasonsFragment extends Fragment {
                 );
                 params.setMargins(0, 20, 0, 0);
                 String urtea= selectedItem.split("-")[0];
-                String competi=spinnerCompetitions.getSelectedItem().toString().split(" ")[0];
+                String competi= spinnerCompetitions.getSelectedItem().toString();
                 List<Match> partidoak;
 
                 try {

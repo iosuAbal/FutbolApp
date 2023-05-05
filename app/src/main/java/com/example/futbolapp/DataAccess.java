@@ -81,12 +81,13 @@ public class DataAccess {
 
 
 
-        String filePath ="/data/data/com.example.futbolapp/files/"+competi+".json";
+        String filePath ="/data/data/com.example.futbolapp/files/matches.json";
         Gson gson = new Gson();
         JsonReader reader = new JsonReader(new FileReader(filePath));
         Match[] matches = gson.fromJson(reader, Match[].class);
         List<Match> matches2020 = Arrays.stream(matches)
                 .filter(m -> m.getLeague().getSeason()==(Integer.parseInt(urtea)))
+                .filter(m->m.getLeague().getName().equals(competi))
                 .collect(Collectors.toList());
 
         return Arrays.asList(ordenarPartidosPorFecha(matches2020.toArray(new Match[0])));
@@ -94,8 +95,6 @@ public class DataAccess {
 
     }
     public static List<Standing> getStandingsFromJson(String urtea,String competi) throws IOException {
-
-
         String filePath ="/data/data/com.example.futbolapp/files/proba.json";
         Gson gson = new Gson();
         JsonReader reader = new JsonReader(new FileReader(filePath));
@@ -116,8 +115,6 @@ public class DataAccess {
                 }
             }
         }
-
-
         System.out.println("standings are "+st.toString());
 
 
