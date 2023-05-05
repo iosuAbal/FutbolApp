@@ -86,10 +86,10 @@ public class DataAccess {
         JsonReader reader = new JsonReader(new FileReader(filePath));
         Match[] matches = gson.fromJson(reader, Match[].class);
         List<Match> matches2020 = Arrays.stream(matches)
-                .filter(m -> m.getFixture().getDate().startsWith(urtea))
+                .filter(m -> m.getLeague().getSeason()==(Integer.parseInt(urtea)))
                 .collect(Collectors.toList());
 
-        return matches2020;
+        return Arrays.asList(ordenarPartidosPorFecha(matches2020.toArray(new Match[0])));
 
 
     }
@@ -134,9 +134,17 @@ public class DataAccess {
         // Crea un nuevo comparador para ordenar los partidos de más reciente a más antiguo
         Comparator<Match> comparador = (partido1, partido2) -> {
             try {
-                Date fecha1 = formato.parse(partido1.getFixture().getDate());
+                //Date fecha1 = formato.parse(partido1.getFixture().getDate());
                 Date fecha2 = formato.parse(partido2.getFixture().getDate());
-                return fecha2.compareTo(fecha1);
+                int matchDay1 = Integer.parseInt(partido1.getLeague().getRound().split(" ")[3]);
+                int matchDay2 = Integer.parseInt(partido2.getLeague().getRound().split(" ")[3]);
+                if (matchDay1 > matchDay2) {
+                    return 1;
+                } else if (matchDay1 < matchDay2) {
+                    return -1;
+                } else {
+                    return 0;
+                }
             } catch (ParseException e) {
                 // Manejar la excepción en caso de que la cadena no se pueda analizar
                 e.printStackTrace();
