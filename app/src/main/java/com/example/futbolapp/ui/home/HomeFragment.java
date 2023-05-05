@@ -31,6 +31,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -56,6 +57,7 @@ public class HomeFragment extends Fragment {
     private LinearLayout linearLayout;
     private Match partidoak[];
     final CountDownLatch latch = new CountDownLatch(1);
+    private int previousMatchDay = -1;
 
 // Realizar la llamada a la API
 
@@ -128,9 +130,11 @@ public class HomeFragment extends Fragment {
         /*String result= partido.getTeams().getHome().getName()+" "+ partido.getScore().getFulltime().getHome()
                 +" - "+
                 partido.getScore().getFulltime().getAway()+"  "+ partido.getTeams().getAway().getName();*/
+        int currentMatchDay = Integer.parseInt(partido.getLeague().getRound().split(" ")[3]);
         String homeName = partido.getTeams().getHome().getName();
         String score = partido.getScore().getFulltime().getHome()+" - "+ partido.getScore().getFulltime().getAway();
         String awayName = partido.getTeams().getAway().getName();
+        TextView liveText = null;
         TextView liveView = null;
         ImageView livePic = null;
         LinearLayout liveLayout = null;
@@ -151,6 +155,12 @@ public class HomeFragment extends Fragment {
             liveLayout.setGravity(Gravity.CENTER_HORIZONTAL);
             liveLayout.addView(livePic);
 
+            String live ="min "+partido.getFixture().getStatus().getElapsed();
+            liveText = new TextView(getContext());
+            liveText.setGravity(Gravity.CENTER_HORIZONTAL);
+            liveText.setText(live);
+            liveText.setTextSize(16);
+            liveText.setTextColor(Color.GREEN);
         }
 
         TextView homeNameView = new TextView(getContext());
@@ -209,7 +219,7 @@ public class HomeFragment extends Fragment {
         GradientDrawable gd = new GradientDrawable();
         gd.setColor(Color.TRANSPARENT);  // Color de fondo del LinearLayout
         gd.setStroke(2, Color.BLACK);  // Ancho y color del borde
-        gd.setCornerRadius(10);  // Radio de los bordes redondeados
+        gd.setCornerRadius(30);  // Radio de los bordes redondeados
 
         //layoutHorizontal.setBackground(gd);
 
@@ -228,7 +238,7 @@ public class HomeFragment extends Fragment {
         int screenWidth = displayMetrics.widthPixels-100;
 
 
-// Establecer el ancho de cada View en función del ancho de la pantalla
+        // Establecer el ancho de cada View en función del ancho de la pantalla
         for (int i = 0; i < layoutHorizontal.getChildCount(); i++) {
             View child = layoutHorizontal.getChildAt(i);
             LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) child.getLayoutParams();
@@ -247,8 +257,25 @@ public class HomeFragment extends Fragment {
         //layoutVertical.setGravity(Gravity.CENTER_HORIZONTAL);
         layoutVertical.addView(liveLayout);
         layoutVertical.addView(layoutHorizontal);
+        layoutVertical.addView(liveText);
 
         layoutVertical.setBackground(gd);
+        //bottom margin to layoutVertical
+        LinearLayout.LayoutParams params3 = (LinearLayout.LayoutParams) layoutVertical.getLayoutParams();
+        params3.bottomMargin=25;
+
+        layoutVertical.setLayoutParams(params3);
+
+
+        if (previousMatchDay!=currentMatchDay || previousMatchDay==-1) {
+            TextView matchDayView = new TextView(getContext());
+            matchDayView.setGravity(Gravity.CENTER_HORIZONTAL);
+            matchDayView.setText("Match day "+currentMatchDay);
+            matchDayView.setTextSize(20);
+            linearLayout.addView(matchDayView);
+            previousMatchDay = currentMatchDay;
+            //if ()
+        }
         linearLayout.addView(layoutVertical);
     }
 
