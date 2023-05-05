@@ -10,11 +10,17 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.futbolapp.DataAccess;
 import com.example.futbolapp.databinding.FragmentSlideshowBinding;
+import com.example.futbolapp.gureKlaseak.Standing;
+
+import java.io.IOException;
+import java.util.List;
 
 public class SlideshowFragment extends Fragment {
 
     private FragmentSlideshowBinding binding;
+    private List<Standing> ranking;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -22,11 +28,26 @@ public class SlideshowFragment extends Fragment {
                 new ViewModelProvider(this).get(SeasonsViewModel.class);
 
         binding = FragmentSlideshowBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        View rootView = binding.getRoot();
 
-        final TextView textView = binding.textSlideshow;
-        seasonsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+        try {
+            ranking= DataAccess.getStandingsFromJson("2020", "La Liga");
+            System.out.println(ranking);
+            for(Standing s :ranking){
+                printStanding(s);
+            }
+        } catch (IOException e) {
+            System.out.println("error on standings");
+            throw new RuntimeException(e);
+        }
+
+
+        return rootView;
+    }
+
+    private void printStanding(Standing s) {
+        String result=s.getRank()+" "+s.getTeam().getName()+"    "+s.getPoints();
+        System.out.println(result);
     }
 
     @Override

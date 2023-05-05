@@ -71,11 +71,12 @@ public class HomeFragment extends Fragment {
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
         System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         //-----
+        /*
         partidoak = null;
         while (partidoak == null) {
             partidoak = DataAccess.getMatchesFromAPI();
             if (partidoak == null) {
-                // Si el valor es nulo, esperamos 500 milisegundos antes de volver a intentarlo
+
                 try {
                     Thread.sleep(1500);
                 } catch (InterruptedException e) {
@@ -84,7 +85,6 @@ public class HomeFragment extends Fragment {
             }
         }
 
-        System.out.println("ha salido ..");
 
 
 
@@ -108,7 +108,7 @@ public class HomeFragment extends Fragment {
         for (Match m: unekoPartidoak){
             printMatch(params,m);
             System.out.println(m);
-        }
+        }*/
 
         return rootView;
     }

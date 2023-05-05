@@ -1,5 +1,7 @@
 package com.example.futbolapp.gureKlaseak;
 
+import java.util.List;
+
 import io.realm.RealmObject;
 
 public class League {
@@ -10,6 +12,18 @@ public class League {
     private String flag;
     private int season;
     private String round;
+
+    public Standing[][] getStandings() {
+        return standings;
+    }
+
+    private Standing[][] standings;
+
+
+
+
+
+
 
     public int getId() {
         return id;
@@ -39,5 +53,4 @@ public class League {
         return country;
     }
 
-    // Constructor, getters y setters
 }

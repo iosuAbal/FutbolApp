@@ -2,7 +2,10 @@ package com.example.futbolapp;
 
 import android.provider.ContactsContract;
 
+import com.example.futbolapp.gureKlaseak.League;
 import com.example.futbolapp.gureKlaseak.Match;
+import com.example.futbolapp.gureKlaseak.Proba;
+import com.example.futbolapp.gureKlaseak.Standing;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
@@ -90,10 +93,44 @@ public class DataAccess {
 
 
     }
+    public static List<Standing> getStandingsFromJson(String urtea,String competi) throws IOException {
+
+
+        String filePath ="/data/data/com.example.futbolapp/files/proba.json";
+        Gson gson = new Gson();
+        JsonReader reader = new JsonReader(new FileReader(filePath));
+        Proba[] leagues = gson.fromJson(reader, Proba[].class);
+        League league = Arrays.stream(leagues)
+                .filter(m -> m.getLeague().getSeason() == Integer.parseInt(urtea))
+                .filter(m->m.getLeague().getName().equals(competi))
+                .findFirst()
+                .map(Proba::getLeague)
+                .orElse(null);
+
+        List<Standing> st = new ArrayList<>();
+
+        for (Standing[] standingArr : league.getStandings()) {
+            if (standingArr != null && standingArr.length > 0) {
+                for (Standing standing : standingArr) {
+                    st.add(standing);
+                }
+            }
+        }
+
+
+        System.out.println("standings are "+st.toString());
+
+
+        return st;
+
+
+
+
+
+    }
     public static Match[] ordenarPartidosPorFecha(Match[] partidos) {
         // Crea un nuevo formato de fecha para analizar las cadenas de fecha
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
         // Crea un nuevo comparador para ordenar los partidos de más reciente a más antiguo
         Comparator<Match> comparador = (partido1, partido2) -> {
             try {
