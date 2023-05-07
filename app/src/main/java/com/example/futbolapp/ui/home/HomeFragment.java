@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.futbolapp.DataAccess;
+import com.example.futbolapp.MainActivity;
 import com.example.futbolapp.R;
 import com.example.futbolapp.databinding.FragmentHomeBinding;
 import com.example.futbolapp.gureKlaseak.Match;
@@ -114,7 +115,7 @@ public class HomeFragment extends Fragment {
                 .collect(Collectors.toList());
         System.out.println("UNEKOAK "+unekoPartidoak.toString());
         for (Match m: unekoPartidoak){
-            printMatch(params,m);
+            linearLayout = MainActivity.printMatch(linearLayout, getContext(), params,m);
             System.out.println(m);
         }
 
