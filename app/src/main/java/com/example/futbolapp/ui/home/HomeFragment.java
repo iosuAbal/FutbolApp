@@ -56,10 +56,16 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private LinearLayout linearLayout;
-    private Match partidoak[];
+
+
+
+    private static Match[] partidoak;
     final CountDownLatch latch = new CountDownLatch(1);
     private int previousMatchDay = -1;
 
+    public static Match[] getPartidoak() {
+        return partidoak;
+    }
 // Realizar la llamada a la API
 
 

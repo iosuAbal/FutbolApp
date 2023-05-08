@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         TextView liveView = null;
         ImageView livePic = null;
         LinearLayout liveLayout = null;
+
         if (true){
             /*String live ="LIVE min("+partido.getFixture().getStatus().getElapsed()+")";
             liveView = new TextView(getContext());
