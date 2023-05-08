@@ -54,16 +54,23 @@ public class SeasonsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_seasons, container, false);
 
+        GradientDrawable gd = new GradientDrawable();
+        gd.setColor(Color.TRANSPARENT);  // Color de fondo del LinearLayout
+        gd.setStroke(2, Color.BLACK);  // Ancho y color del borde
+        gd.setCornerRadius(30);
+
         spinnerYears = rootView.findViewById(R.id.spinnerYears);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.seasons_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerYears.setAdapter(adapter);
+        spinnerYears.setBackground(gd);
 
         spinnerCompetitions = rootView.findViewById(R.id.spinnerCompetitions);
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.competi_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCompetitions.setAdapter(adapter2);
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
+        linearLayout.setBackground(gd);
 
 
 
