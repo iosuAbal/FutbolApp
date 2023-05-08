@@ -98,7 +98,7 @@ public class SeasonsFragment extends Fragment {
 
 
                 for (Match partido: partidoak) {
-                    linearLayout = MainActivity.printMatch(linearLayout, getContext(), params, partido);
+                    linearLayout = MainActivity.printMatch(linearLayout, getContext(), params, partido,true);
                 }
             }
             @Override

@@ -79,18 +79,18 @@ public class HomeFragment extends Fragment {
 
 
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        //-----
+        //
         try {
             partidoak = DataAccess.getMatchesFromJson("2021", "Premier").toArray(new Match[0]);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         partidoak = null;
-        while (partidoak == null) {
+        int kont=0;
+        while (partidoak == null && kont<5) {
             partidoak = DataAccess.getMatchesFromAPI();
+            kont++;
             if (partidoak == null) {
-                // Si el valor es nulo, esperamos 500 milisegundos antes de volver a intentarlo
                 try {
                     Thread.sleep(1500);
                 } catch (InterruptedException e) {
@@ -113,7 +113,6 @@ public class HomeFragment extends Fragment {
         );
         params.setMargins(0, 20, 0, 0);
 
-        System.out.println("AA"+partidoak);
         List<Match> unekoPartidoak = Arrays.stream(partidoak)
                 .filter(m -> m.getFixture().getDate().
                         startsWith(String.valueOf(year)+"-"+ (month)))
@@ -121,7 +120,7 @@ public class HomeFragment extends Fragment {
                 .collect(Collectors.toList());
         System.out.println("UNEKOAK "+unekoPartidoak.toString());
         for (Match m: unekoPartidoak){
-            linearLayout = MainActivity.printMatch(linearLayout, getContext(), params,m);
+            linearLayout = MainActivity.printMatch(linearLayout, getContext(), params,m,true);
             System.out.println(m);
         }
 

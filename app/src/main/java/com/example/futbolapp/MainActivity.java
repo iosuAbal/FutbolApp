@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    public static LinearLayout printMatch(LinearLayout linearLayout, Context context, LinearLayout.LayoutParams params, Match partido) {
+    public static LinearLayout printMatch(LinearLayout linearLayout, Context context, LinearLayout.LayoutParams params, Match partido, Boolean finished) {
         /*String result= partido.getTeams().getHome().getName()+" "+ partido.getScore().getFulltime().getHome()
                 +" - "+
                 partido.getScore().getFulltime().getAway()+"  "+ partido.getTeams().getAway().getName();*/

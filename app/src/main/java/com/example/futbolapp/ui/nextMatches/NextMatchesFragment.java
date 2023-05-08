@@ -98,7 +98,7 @@ public class NextMatchesFragment extends Fragment {
 
 
                 for (Match partido: partidoak) {
-                    linearLayout = MainActivity.printMatch(linearLayout, getContext(), params, partido);
+                    linearLayout = MainActivity.printMatch(linearLayout, getContext(), params, partido,false);
                 }
             }
             @Override
