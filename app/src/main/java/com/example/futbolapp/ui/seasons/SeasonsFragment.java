@@ -53,8 +53,9 @@ public class SeasonsFragment extends Fragment {
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.competi_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCompetitions.setAdapter(adapter2);
+        spinnerCompetitions.setBackground(gd);
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
-        linearLayout.setBackground(gd);
+        //linearLayout.setBackground(gd);
 
 
 
