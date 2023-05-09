@@ -2,43 +2,27 @@ package com.example.futbolapp.ui.seasons;
 
 import static com.example.futbolapp.DataAccess.getMatchesFromJson;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.futbolapp.DataAccess;
 import com.example.futbolapp.MainActivity;
 import com.example.futbolapp.gureKlaseak.Match;
 import com.example.futbolapp.R;
-import com.example.futbolapp.ui.home.HomeFragment;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.List;
-
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmResults;
 
 public class SeasonsFragment extends Fragment {
 
@@ -65,7 +49,7 @@ public class SeasonsFragment extends Fragment {
         spinnerYears.setAdapter(adapter);
         spinnerYears.setBackground(gd);
 
-        spinnerCompetitions = rootView.findViewById(R.id.spinnerCompetitions);
+        spinnerCompetitions = rootView.findViewById(R.id.spinnerCompetitions2);
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.competi_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCompetitions.setAdapter(adapter2);

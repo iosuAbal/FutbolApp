@@ -1,7 +1,5 @@
 package com.example.futbolapp.ui.slideshow;
 
-import static com.example.futbolapp.DataAccess.getMatchesFromJson;
-
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -19,13 +17,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.futbolapp.DataAccess;
-import com.example.futbolapp.MainActivity;
 import com.example.futbolapp.R;
 import com.example.futbolapp.databinding.FragmentSlideshowBinding;
-import com.example.futbolapp.gureKlaseak.Match;
 import com.example.futbolapp.gureKlaseak.Standing;
 
 import java.io.IOException;
@@ -41,7 +36,7 @@ public class SlideshowFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_seasons, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_slideshow, container, false);
         GradientDrawable gd = new GradientDrawable();
         gd.setColor(Color.TRANSPARENT);  // Color de fondo del LinearLayout
         gd.setStroke(2, Color.BLACK);  // Ancho y color del borde
@@ -55,7 +50,6 @@ public class SlideshowFragment extends Fragment {
         spinnerYears.setAdapter(adapter);
         spinnerYears.setBackground(gd);
         spinnerYears.setGravity(Gravity.CENTER_HORIZONTAL);
-
         spinnerCompetitions = rootView.findViewById(R.id.spinnerCompetitions);
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.competi_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

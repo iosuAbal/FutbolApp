@@ -1,0 +1,9 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" /> <!-- Color de fondo del Spinner -->
+             <!-- Radio de las esquinas del Spinner -->
+        </shape>
+    </item>
+    <item android:drawable="@android:drawable/btn_dropdown" /> <!-- Flecha del Spinner -->
+</layer-list>
