@@ -6,6 +6,7 @@ import com.example.futbolapp.gureKlaseak.League;
 import com.example.futbolapp.gureKlaseak.Match;
 import com.example.futbolapp.gureKlaseak.Proba;
 import com.example.futbolapp.gureKlaseak.Standing;
+import com.example.futbolapp.ui.home.ApiMap;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
@@ -36,10 +37,11 @@ public class DataAccess {
     private static Match[] partidoak;
     private static Match[] partidoakOrdenatuta;
 
-    public static Match [] getMatchesFromAPI(){
+    public static Match [] getMatchesFromAPI(String league){
+        String leagueId= String.valueOf(ApiMap.getValueByName(league));
 
         OkHttpClient client = new OkHttpClient();
-        String url = "https://v3.football.api-sports.io/fixtures?league=140&season=2022";
+        String url = "https://v3.football.api-sports.io/fixtures?league="+leagueId+"&season=2022";
 
         Request request = new Request.Builder()
                 .url(url)

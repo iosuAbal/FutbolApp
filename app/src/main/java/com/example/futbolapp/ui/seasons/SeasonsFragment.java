@@ -47,13 +47,13 @@ public class SeasonsFragment extends Fragment {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.seasons_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerYears.setAdapter(adapter);
-        spinnerYears.setBackground(gd);
+        //spinnerYears.setBackground(gd);
 
-        spinnerCompetitions = rootView.findViewById(R.id.spinnerCompetitions2);
+        spinnerCompetitions = rootView.findViewById(R.id.spinnerCompetitions);
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.competi_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCompetitions.setAdapter(adapter2);
-        spinnerCompetitions.setBackground(gd);
+        //spinnerCompetitions.setBackground(gd);
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
         //linearLayout.setBackground(gd);
 
@@ -62,29 +62,17 @@ public class SeasonsFragment extends Fragment {
         spinnerYears.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                linearLayout = rootView.findViewById(R.id.myLinearLayout);
-                String selectedItem = parent.getItemAtPosition(position).toString();
-
-                linearLayout.removeAllViews();
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-                params.setMargins(0, 20, 0, 0);
-                String urtea= selectedItem.split("-")[0];
-                String competi= spinnerCompetitions.getSelectedItem().toString();
-                List<Match> partidoak;
-
-                try {
-                    partidoak=getMatchesFromJson(urtea,competi);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-
-                for (Match partido: partidoak) {
-                    linearLayout = MainActivity.printMatch(linearLayout, getContext(), params, partido,true);
-                }
+                tratatuSpinner(rootView);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // No se hace nada si no se selecciona nada
+            }
+        });
+        spinnerCompetitions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                tratatuSpinner(rootView);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -92,6 +80,30 @@ public class SeasonsFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    public void tratatuSpinner(View rootView){
+        linearLayout = rootView.findViewById(R.id.myLinearLayout);
+        String selectedItem = spinnerYears.getSelectedItem().toString();
+
+        linearLayout.removeAllViews();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(0, 20, 0, 0);
+        String urtea= selectedItem.split("-")[0];
+        String competi= spinnerCompetitions.getSelectedItem().toString();
+        List<Match> partidoak;
+        try {
+            partidoak=getMatchesFromJson(urtea,competi);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        for (Match partido: partidoak) {
+            linearLayout = MainActivity.printMatch(linearLayout, getContext(), params, partido,true);
+        }
+
     }
 
 

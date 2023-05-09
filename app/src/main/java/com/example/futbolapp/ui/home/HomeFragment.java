@@ -1,5 +1,7 @@
 package com.example.futbolapp.ui.home;
 
+import static com.example.futbolapp.DataAccess.getMatchesFromJson;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -12,8 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -60,7 +65,7 @@ public class HomeFragment extends Fragment {
 
 
     private static Match[] partidoak;
-    final CountDownLatch latch = new CountDownLatch(1);
+    private Spinner spinnerCompetitions;
     private int previousMatchDay = -1;
 
     public static Match[] getPartidoak() {
@@ -76,43 +81,66 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
-
-
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
-        //
+        spinnerCompetitions = rootView.findViewById(R.id.spinnerCompetitions);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.competi_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCompetitions.setAdapter(adapter);
+
+        /* para no gastar request
         try {
             partidoak = DataAccess.getMatchesFromJson("2021", "Premier").toArray(new Match[0]);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        partidoak = null;
-        int kont=0;
-        while (partidoak == null && kont<5) {
-            partidoak = DataAccess.getMatchesFromAPI();
-            kont++;
-            if (partidoak == null) {
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
+         */
+        spinnerCompetitions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                tratatuSpinner(rootView);
             }
-        }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        return rootView;
+    }
 
-        System.out.println("ha salido ..");
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 
-
-
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
-        String month = dateFormat.format(cal.getTime());
+    public void tratatuSpinner(View rootView){
+        linearLayout = rootView.findViewById(R.id.myLinearLayout);
+        linearLayout.removeAllViews();
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         params.setMargins(0, 20, 0, 0);
-
+        String competi= spinnerCompetitions.getSelectedItem().toString();
+        System.out.println("competi"+competi);
+        partidoak = null;
+        int kont=0;
+        while (partidoak == null && kont<5) {
+            partidoak = DataAccess.getMatchesFromAPI(competi);
+            kont++;
+            if (partidoak == null) {
+                try {
+                    Thread.sleep(2500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
+        String month = dateFormat.format(cal.getTime());
+        System.out.println(partidoak[0].getFixture());
         List<Match> unekoPartidoak = Arrays.stream(partidoak)
                 .filter(m -> m.getFixture().getDate().
                         startsWith(String.valueOf(year)+"-"+ (month)))
@@ -124,14 +152,20 @@ public class HomeFragment extends Fragment {
             System.out.println(m);
         }
 
-        return rootView;
+
+
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
+
+
+
+
+
+
+
+
+
+
     private void printMatch(LinearLayout.LayoutParams params, Match partido) {
         /*String result= partido.getTeams().getHome().getName()+" "+ partido.getScore().getFulltime().getHome()
                 +" - "+
