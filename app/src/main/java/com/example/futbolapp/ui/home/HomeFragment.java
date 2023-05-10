@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
@@ -114,6 +115,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void tratatuSpinner(View rootView){
+        System.out.println("tratatzen...");
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
         linearLayout.removeAllViews();
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -123,34 +125,31 @@ public class HomeFragment extends Fragment {
         params.setMargins(0, 20, 0, 0);
         String competi= spinnerCompetitions.getSelectedItem().toString();
         System.out.println("competi"+competi);
-        partidoak = null;
-        int kont=0;
-        while (partidoak == null && kont<5) {
-            partidoak = DataAccess.getMatchesFromAPI(competi);
-            kont++;
-            if (partidoak == null) {
-                try {
-                    Thread.sleep(2500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
+
+        CompletableFuture<Match[]> futurePartidoak = DataAccess.getMatchesFromAPI(competi);
+        futurePartidoak.thenAccept(partidoGuztiak -> {
+            partidoak=partidoGuztiak;
+            System.out.println("Deia bukatu da eta bueltatu ditu"+partidoak);
+            Calendar cal = Calendar.getInstance();
+            int year = cal.get(Calendar.YEAR);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
+            String month = dateFormat.format(cal.getTime());
+            List<Match> unekoPartidoak = Arrays.stream(partidoak)
+                    .filter(m -> m.getFixture().getDate().
+                            startsWith(String.valueOf(year)+"-"+ (month)))
+                    .filter(m->m.getFixture().getStatus().getElapsed()!=null)
+                    .collect(Collectors.toList());
+            System.out.println("UNEKOAK "+unekoPartidoak.toString());
+            for (Match m: unekoPartidoak){
+                //linearLayout = MainActivity.printMatch(linearLayout, getContext(), params,m,true);
+                System.out.println(m.getTeams().getHome().getName()+"-"+m.getTeams().getAway().getName());
+
+
             }
-        }
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
-        String month = dateFormat.format(cal.getTime());
-        System.out.println(partidoak[0].getFixture());
-        List<Match> unekoPartidoak = Arrays.stream(partidoak)
-                .filter(m -> m.getFixture().getDate().
-                        startsWith(String.valueOf(year)+"-"+ (month)))
-                .filter(m->m.getFixture().getStatus().getElapsed()!=null)
-                .collect(Collectors.toList());
-        System.out.println("UNEKOAK "+unekoPartidoak.toString());
-        for (Match m: unekoPartidoak){
-            linearLayout = MainActivity.printMatch(linearLayout, getContext(), params,m,true);
-            System.out.println(m);
-        }
+        });
+
+
 
 
 

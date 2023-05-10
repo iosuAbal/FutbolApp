@@ -2,6 +2,7 @@ package com.example.futbolapp;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         TextView liveView = null;
         ImageView livePic = null;
         LinearLayout liveLayout = null;
+        System.out.println("printing");
 
         if (true){
             /*String live ="LIVE min("+partido.getFixture().getStatus().getElapsed()+")";
@@ -107,7 +109,10 @@ public class MainActivity extends AppCompatActivity {
             params.gravity= Gravity.CENTER_HORIZONTAL;
             livePic.setLayoutParams(imageParams);
             String liveURL = "https://static.vecteezy.com/system/resources/previews/016/314/808/original/transparent-live-transparent-live-icon-free-png.png";
-            Picasso.get().load(liveURL).into(livePic);
+            ImageView finalLivePic = livePic;
+            //loadImageInUI(context,liveURL,livePic);
+
+
             //linearLayout.addView(livePic);
             liveLayout = new LinearLayout(context);
             liveLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -139,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         //params.gravity= Gravity.CENTER;
         homePic.setLayoutParams(imageParams);
         String homeURL = partido.getTeams().getHome().getLogo();
-        Picasso.get().load(homeURL).into(homePic);
+        //loadImageInUI(context,homeURL,homePic);
         LinearLayout homeLayout = new LinearLayout(context);
         homeLayout.setOrientation(LinearLayout.VERTICAL);
         homeLayout.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -160,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView awayPic = new ImageView(context);
         awayPic.setLayoutParams(imageParams);
         String awayURL = partido.getTeams().getAway().getLogo();
-        Picasso.get().load(awayURL).into(awayPic);
+        //loadImageInUI(context,awayURL,awayPic);
         LinearLayout awayLayout = new LinearLayout(context);
         awayLayout.setOrientation(LinearLayout.VERTICAL);
         awayLayout.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -174,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
         layoutHorizontal.setOrientation(LinearLayout.HORIZONTAL);
+
 
         GradientDrawable gd = new GradientDrawable();
         gd.setColor(Color.TRANSPARENT);  // Color de fondo del LinearLayout
@@ -195,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
         ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
         int screenWidth = displayMetrics.widthPixels-100;
+        System.out.println("printing2");
 
 
         // Establecer el ancho de cada View en función del ancho de la pantalla
@@ -235,9 +242,24 @@ public class MainActivity extends AppCompatActivity {
             previousMatchDay = currentMatchDay;
             //if ()
         }
+        System.out.println("printing3");
         linearLayout.addView(layoutVertical);
+        System.out.println("printing4");
 
         return linearLayout;
+    }
+
+    public static void loadImageInUI(Context context, String imageUrl, ImageView imageView) {
+        if (context != null) {
+            // Ejecutar código en el hilo de la interfaz de usuario
+            ((Activity) context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // Cargar la imagen en el ImageView utilizando Picasso
+                    Picasso.get().load(imageUrl).into(imageView);
+                }
+            });
+        }
     }
 
 

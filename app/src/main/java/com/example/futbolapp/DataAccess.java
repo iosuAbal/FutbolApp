@@ -1,6 +1,9 @@
 package com.example.futbolapp;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.provider.ContactsContract;
+import android.widget.ImageView;
 
 import com.example.futbolapp.gureKlaseak.League;
 import com.example.futbolapp.gureKlaseak.Match;
@@ -9,6 +12,7 @@ import com.example.futbolapp.gureKlaseak.Standing;
 import com.example.futbolapp.ui.home.ApiMap;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import okhttp3.Call;
@@ -37,11 +42,39 @@ public class DataAccess {
     private static Match[] partidoak;
     private static Match[] partidoakOrdenatuta;
 
-    public static Match [] getMatchesFromAPI(String league){
-        String leagueId= String.valueOf(ApiMap.getValueByName(league));
+    public void loadImg(String url, ImageView pic){
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        Call imageCall = client.newCall(request);
+
+        imageCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                System.out.println("Error al obtener la imagen");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+
+
+
+                }
+            }
+        });
+
+    }
+
+    public static CompletableFuture<Match[]> getMatchesFromAPI(String league) {
+        CompletableFuture<Match[]> future = new CompletableFuture<>();
+
+        String leagueId = String.valueOf(ApiMap.getValueByName(league));
 
         OkHttpClient client = new OkHttpClient();
-        String url = "https://v3.football.api-sports.io/fixtures?league="+leagueId+"&season=2022";
+        String url = "https://v3.football.api-sports.io/fixtures?league=" + leagueId + "&season=2022";
 
         Request request = new Request.Builder()
                 .url(url)
@@ -53,36 +86,33 @@ public class DataAccess {
             @Override
             public void onFailure(Call call, IOException e) {
                 System.out.println("Error in call");
+                future.completeExceptionally(e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String json=response.body().string();
-                System.out.println("Call done "+json);
+                String json = response.body().string();
+                System.out.println("Call done " + json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
-                    JSONArray jsonArr=jsonObject.getJSONArray("response");
+                    JSONArray jsonArr = jsonObject.getJSONArray("response");
                     Gson gson = new Gson();
-                    partidoak = gson.fromJson(jsonArr.toString(), Match[].class);
-                    System.out.println("PARTIDOAK"+partidoak.toString());
+                    Match[] partidoak = gson.fromJson(jsonArr.toString(), Match[].class);
+                    System.out.println("PARTIDOAK" + partidoak.toString());
                     partidoakOrdenatuta = ordenarPartidosPorFecha(partidoak);
-
-
-
+                    future.complete(partidoakOrdenatuta);
                 } catch (JSONException e) {
-                    System.out.println("Response ok but JSON ERROR ");
-
+                    System.out.println("Response ok but JSON ERROR");
+                    future.completeExceptionally(e);
                 }
-
             }
         });
-        return partidoakOrdenatuta;
+
+        return future;
     }
 
+
     public static List<Match> getMatchesFromJson(String urtea,String competi) throws IOException {
-
-
-
         String filePath ="/data/data/com.example.futbolapp/files/matches.json";
         Gson gson = new Gson();
         JsonReader reader = new JsonReader(new FileReader(filePath));
@@ -91,9 +121,7 @@ public class DataAccess {
                 .filter(m -> m.getLeague().getSeason()==(Integer.parseInt(urtea)))
                 .filter(m->m.getLeague().getName().equals(competi))
                 .collect(Collectors.toList());
-
         return Arrays.asList(ordenarPartidosPorFecha(matches2020.toArray(new Match[0])));
-
 
     }
     public static List<Standing> getStandingsFromJson(String urtea,String competi) throws IOException {
@@ -109,7 +137,6 @@ public class DataAccess {
                 .orElse(null);
 
         List<Standing> st = new ArrayList<>();
-
         for (Standing[] standingArr : league.getStandings()) {
             if (standingArr != null && standingArr.length > 0) {
                 for (Standing standing : standingArr) {
@@ -118,8 +145,6 @@ public class DataAccess {
             }
         }
         System.out.println("standings are "+st.toString());
-
-
         return st;
 
 
