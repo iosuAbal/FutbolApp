@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -66,6 +68,16 @@ public class HomeFragment extends Fragment {
 
 
     private static Match[] partidoak;
+
+    public List<Match> getUnekoPartidoak() {
+        return unekoPartidoak;
+    }
+
+    public void setUnekoPartidoak(List<Match> unekoPartidoak) {
+        this.unekoPartidoak = unekoPartidoak;
+    }
+
+    private List<Match> unekoPartidoak;
     private Spinner spinnerCompetitions;
     private int previousMatchDay = -1;
 
@@ -107,7 +119,6 @@ public class HomeFragment extends Fragment {
         });
         return rootView;
     }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -115,7 +126,6 @@ public class HomeFragment extends Fragment {
     }
 
     public void tratatuSpinner(View rootView){
-        System.out.println("tratatzen...");
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
         linearLayout.removeAllViews();
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -124,36 +134,38 @@ public class HomeFragment extends Fragment {
         );
         params.setMargins(0, 20, 0, 0);
         String competi= spinnerCompetitions.getSelectedItem().toString();
-        System.out.println("competi"+competi);
-
-
         CompletableFuture<Match[]> futurePartidoak = DataAccess.getMatchesFromAPI(competi);
         futurePartidoak.thenAccept(partidoGuztiak -> {
             partidoak=partidoGuztiak;
-            System.out.println("Deia bukatu da eta bueltatu ditu"+partidoak);
             Calendar cal = Calendar.getInstance();
             int year = cal.get(Calendar.YEAR);
             SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
             String month = dateFormat.format(cal.getTime());
-            List<Match> unekoPartidoak = Arrays.stream(partidoak)
+            List<Match>unekoPartidoak = Arrays.stream(partidoak)
                     .filter(m -> m.getFixture().getDate().
                             startsWith(String.valueOf(year)+"-"+ (month)))
                     .filter(m->m.getFixture().getStatus().getElapsed()!=null)
                     .collect(Collectors.toList());
-            System.out.println("UNEKOAK "+unekoPartidoak.toString());
-            for (Match m: unekoPartidoak){
-                //linearLayout = MainActivity.printMatch(linearLayout, getContext(), params,m,true);
-                System.out.println(m.getTeams().getHome().getName()+"-"+m.getTeams().getAway().getName());
+            //on the main thread
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    for(Match m:unekoPartidoak){
+                        MainActivity.printMatch(linearLayout,getContext(),params,m,false);
+                    }
+                }
+            });
 
 
-            }
         });
 
 
-
-
-
     }
+
+
+
+
 
 
 

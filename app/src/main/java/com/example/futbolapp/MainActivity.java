@@ -109,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
             params.gravity= Gravity.CENTER_HORIZONTAL;
             livePic.setLayoutParams(imageParams);
             String liveURL = "https://static.vecteezy.com/system/resources/previews/016/314/808/original/transparent-live-transparent-live-icon-free-png.png";
-            ImageView finalLivePic = livePic;
-            //loadImageInUI(context,liveURL,livePic);
+            //ImageView finalLivePic = livePic;
+            Picasso.get().load(liveURL).into(livePic);
 
 
             //linearLayout.addView(livePic);
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         //params.gravity= Gravity.CENTER;
         homePic.setLayoutParams(imageParams);
         String homeURL = partido.getTeams().getHome().getLogo();
-        //loadImageInUI(context,homeURL,homePic);
+        Picasso.get().load(homeURL).into(homePic);
         LinearLayout homeLayout = new LinearLayout(context);
         homeLayout.setOrientation(LinearLayout.VERTICAL);
         homeLayout.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView awayPic = new ImageView(context);
         awayPic.setLayoutParams(imageParams);
         String awayURL = partido.getTeams().getAway().getLogo();
-        //loadImageInUI(context,awayURL,awayPic);
+        Picasso.get().load(awayURL).into(awayPic);
         LinearLayout awayLayout = new LinearLayout(context);
         awayLayout.setOrientation(LinearLayout.VERTICAL);
         awayLayout.setGravity(Gravity.CENTER_HORIZONTAL);

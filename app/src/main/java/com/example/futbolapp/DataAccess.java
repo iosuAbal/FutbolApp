@@ -42,31 +42,6 @@ public class DataAccess {
     private static Match[] partidoak;
     private static Match[] partidoakOrdenatuta;
 
-    public void loadImg(String url, ImageView pic){
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        Call imageCall = client.newCall(request);
-
-        imageCall.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                System.out.println("Error al obtener la imagen");
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-
-
-
-                }
-            }
-        });
-
-    }
 
     public static CompletableFuture<Match[]> getMatchesFromAPI(String league) {
         CompletableFuture<Match[]> future = new CompletableFuture<>();
