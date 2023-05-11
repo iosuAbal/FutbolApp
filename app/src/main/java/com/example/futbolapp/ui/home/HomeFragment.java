@@ -1,16 +1,12 @@
 package com.example.futbolapp.ui.home;
 
-import static com.example.futbolapp.DataAccess.getMatchesFromJson;
-
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,33 +28,14 @@ import com.example.futbolapp.MainActivity;
 import com.example.futbolapp.R;
 import com.example.futbolapp.databinding.FragmentHomeBinding;
 import com.example.futbolapp.gureKlaseak.Match;
-import com.example.futbolapp.ui.seasons.SeasonsFragment;
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
-
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class HomeFragment extends Fragment {
 
@@ -67,26 +44,23 @@ public class HomeFragment extends Fragment {
 
 
 
-    private static Match[] partidoak;
 
-    public List<Match> getUnekoPartidoak() {
-        return unekoPartidoak;
-    }
+    private static Match[] partidoakLaLiga;
 
-    public void setUnekoPartidoak(List<Match> unekoPartidoak) {
-        this.unekoPartidoak = unekoPartidoak;
-    }
 
-    private List<Match> unekoPartidoak;
+    private static Match[] partidoakPremier;
+
     private Spinner spinnerCompetitions;
     private int previousMatchDay = -1;
+    private Match[] allMatches;
 
-    public static Match[] getPartidoak() {
-        return partidoak;
+    public static Match[] getPartidoakLaLiga() {
+        return partidoakLaLiga;
     }
-// Realizar la llamada a la API
 
-
+    public static Match[] getPartidoakPremier() {
+        return partidoakPremier;
+    }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
@@ -134,47 +108,56 @@ public class HomeFragment extends Fragment {
         );
         params.setMargins(0, 20, 0, 0);
         String competi= spinnerCompetitions.getSelectedItem().toString();
-        CompletableFuture<Match[]> futurePartidoak = DataAccess.getMatchesFromAPI(competi);
-        futurePartidoak.thenAccept(partidoGuztiak -> {
-            partidoak=partidoGuztiak;
-            Calendar cal = Calendar.getInstance();
-            int year = cal.get(Calendar.YEAR);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
-            String month = dateFormat.format(cal.getTime());
-            List<Match>unekoPartidoak = Arrays.stream(partidoak)
-                    .filter(m -> m.getFixture().getDate().
-                            startsWith(String.valueOf(year)+"-"+ (month)))
-                    .filter(m->m.getFixture().getStatus().getElapsed()!=null)
-                    .collect(Collectors.toList());
-            //on the main thread
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    for(Match m:unekoPartidoak){
-                        MainActivity.printMatch(linearLayout,getContext(),params,m,false);
-                    }
+        switch ( competi){
+            case "La Liga" :
+                if(partidoakLaLiga==null){
+                    partidoakLaLiga=getMatchesFromAPI(params, competi);
                 }
-            });
+                filterAndPrintMatches(params,partidoakLaLiga);
 
+                break;
+            case "Premier League":
+                if(partidoakPremier==null){
+                    partidoakPremier=getMatchesFromAPI(params, competi);
+                }
+                filterAndPrintMatches(params,partidoakPremier);
+                break;
 
-        });
-
-
+        }
     }
 
+    private Match[] getMatchesFromAPI(LinearLayout.LayoutParams params, String competi) {
+        CompletableFuture<Match[]> futurePartidoak = DataAccess.getMatchesFromAPI(competi);
+        futurePartidoak.join();
+        Match[] allMatches = futurePartidoak.getNow(null);
+        if (allMatches != null) {
+            return allMatches;
+        } else {
+            return new Match[0]; // errore kasua
+        }
+    }
 
+    private void filterAndPrintMatches(LinearLayout.LayoutParams params, Match[] allMatches) {
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
+        String month = dateFormat.format(cal.getTime());
+        List<Match> unekoPartidoak = Arrays.stream(allMatches)
+                .filter(m -> m.getFixture().getDate().startsWith(String.valueOf(year) + "-" + (month)))
+                .filter(m -> m.getFixture().getStatus().getElapsed() != null)
+                .collect(Collectors.toList());
 
-
-
-
-
-
-
-
-
-
-
+        // on the main thread
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                for (Match m : unekoPartidoak) {
+                    MainActivity.printMatch(linearLayout, getContext(), params, m, false);
+                }
+            }
+        });
+    }
 
 
     private void printMatch(LinearLayout.LayoutParams params, Match partido) {

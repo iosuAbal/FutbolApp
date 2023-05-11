@@ -1,7 +1,5 @@
 package com.example.futbolapp.ui.nextMatches;
 
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +59,16 @@ public class NextMatchesFragment extends Fragment {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
                 params.setMargins(0, 20, 0, 0);
-                List<Match> partidoak = Arrays.stream(HomeFragment.getPartidoak())
+                Match allMatches[] = null;
+                switch (competi){
+                    case "La Liga":
+                        allMatches = HomeFragment.getPartidoakLaLiga();
+                        break;
+                    case "Premier League":
+                        allMatches = HomeFragment.getPartidoakPremier();
+
+                }
+                List<Match> partidoak = Arrays.stream(allMatches)
                         .filter(m -> {
                             String fechaPartidoStr = m.getFixture().getDate();
                             OffsetDateTime fechaPartido = OffsetDateTime.parse(fechaPartidoStr);

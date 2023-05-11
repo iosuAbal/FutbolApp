@@ -221,7 +221,8 @@ public class MainActivity extends AppCompatActivity {
             ImageView livePic = null;
             LinearLayout liveLayout = null;
 
-            boolean liveDago = partido.getFixture().getStatus().getElapsed()==90;
+            boolean liveDago = partido.getFixture().getStatus().getElapsed() !=null &&
+                    partido.getFixture().getStatus().getElapsed()<=90;
             //Live badago partidoa (probetarako true)
             if (liveDago){
 
