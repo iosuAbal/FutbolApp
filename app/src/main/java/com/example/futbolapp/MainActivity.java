@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
             boolean liveDago = partido.getFixture().getStatus().getElapsed()==90;
             //Live badago partidoa (probetarako true)
-            if (false){
+            if (liveDago){
 
                 //Emaitza lortu
                 String score = partido.getScore().getFulltime().getHome()+" - "+ partido.getScore().getFulltime().getAway();
