@@ -283,12 +283,13 @@ public class MainActivity extends AppCompatActivity {
                 //Partidoaren data lortu
                 String date1 = partido.getFixture().getDate().split("T")[0];
                 String date2 = partido.getFixture().getDate().split("T")[1];
+                String date3 = date2.split("\\+" )[0];
 
                 //Dataren textView sortu
                 TextView dateView = new TextView(context);
                 dateView.setGravity(Gravity.CENTER_HORIZONTAL);
                 dateView.setTextSize(20);
-                dateView.setText(date1);
+                dateView.setText(date1 + "\n" + date3);
 
                 //Partidoaren oinarrizko layout bete
                 layoutHorizontal.addView(homeLayout);
