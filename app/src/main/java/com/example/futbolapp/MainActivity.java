@@ -1,15 +1,11 @@
 package com.example.futbolapp;
 
-import static android.content.ContentValues.TAG;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -27,13 +23,14 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.futbolapp.databinding.ActivityMainBinding;
 import com.example.futbolapp.gureKlaseak.Match;
+import com.example.futbolapp.gureKlaseak.Proba;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-import com.example.futbolapp.R;
 
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,21 +38,39 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private static int previousMatchDay = -1;
 
+
+
+    private static List<Match> allJSONMatches;
+
+    public static List<Match> getAllJSONMatches() {
+        return allJSONMatches;
+    }
+
+
+
+    private static List<Proba> allJSONStandings;
+    public static List<Proba> getGetAllStandings() {
+        return allJSONStandings;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        try {
+            allJSONMatches=DataAccess.loadMatchesFromJSON();
+            allJSONStandings=DataAccess.loadStandingsFromJSON();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each

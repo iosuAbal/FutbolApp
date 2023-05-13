@@ -1,6 +1,5 @@
 package com.example.futbolapp.gureKlaseak;
 
-import io.realm.RealmObject;
 
 public class Penalty {
     private Integer home;

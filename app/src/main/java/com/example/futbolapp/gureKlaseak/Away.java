@@ -1,6 +1,6 @@
 package com.example.futbolapp.gureKlaseak;
 
-import io.realm.RealmObject;
+
 
 public class Away {
     private int id;

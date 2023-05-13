@@ -1,6 +1,5 @@
 package com.example.futbolapp.ui.seasons;
 
-import static com.example.futbolapp.DataAccess.getMatchesFromJson;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -17,12 +16,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.futbolapp.DataAccess;
 import com.example.futbolapp.MainActivity;
 import com.example.futbolapp.gureKlaseak.Match;
 import com.example.futbolapp.R;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 public class SeasonsFragment extends Fragment {
 
@@ -96,14 +99,25 @@ public class SeasonsFragment extends Fragment {
         String competi= spinnerCompetitions.getSelectedItem().toString();
         List<Match> partidoak;
         try {
-            partidoak=getMatchesFromJson(urtea,competi);
+            partidoak= filterPastMatches(MainActivity.getAllJSONMatches(),urtea,competi);
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         for (Match partido: partidoak) {
             linearLayout = MainActivity.printMatch(linearLayout, getContext(), params, partido,true);
         }
 
+    }
+    public static List<Match> filterPastMatches(List<Match> allMatches, String urtea, String competi) throws IOException, ExecutionException, InterruptedException {
+        List<Match> filteredMatches = allMatches.stream()
+                .filter(m -> m.getLeague().getSeason() == (Integer.parseInt(urtea)))
+                .filter(m -> m.getLeague().getName().equals(competi))
+                .collect(Collectors.toList());
+        return Arrays.asList(DataAccess.ordenarPartidosPorFecha(filteredMatches.toArray(new Match[0])));
     }
 
 
