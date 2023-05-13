@@ -2,7 +2,6 @@ package com.example.futbolapp.gureKlaseak;
 
 import java.util.List;
 
-import io.realm.RealmObject;
 
 public class League {
     private int id;

@@ -11,6 +11,9 @@
             android:id="@+id/nav_next"
             android:title="@string/next" />
         <item
+            android:id="@+id/nav_currentStandings"
+            android:title="@string/menu_currentSt" />
+        <item
             android:id="@+id/nav_seasons"
             android:title="@string/seasons" />
         <item

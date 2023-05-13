@@ -1,4 +1,4 @@
-package com.example.futbolapp.ui.slideshow;
+package com.example.futbolapp.ui.standings;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -21,7 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.futbolapp.DataAccess;
-import com.example.futbolapp.MainActivity;
 import com.example.futbolapp.R;
 import com.example.futbolapp.databinding.FragmentSlideshowBinding;
 import com.example.futbolapp.gureKlaseak.League;
@@ -29,15 +28,17 @@ import com.example.futbolapp.gureKlaseak.Proba;
 import com.example.futbolapp.gureKlaseak.Standing;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-public class SlideshowFragment extends Fragment {
+public class CurrentStandingsFragment extends Fragment {
 
     private FragmentSlideshowBinding binding;
     private List<Standing> ranking;
-    private Spinner spinnerYears;
+    private List<Proba> externalStandingsLaLiga;
+    private List<Proba> externalStandingsPremier;
 
     private Spinner spinnerCompetitions;
     private LinearLayout linearLayout;
@@ -45,7 +46,13 @@ public class SlideshowFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_slideshow, container, false);
-
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(0, 20, 0, 0);
+        externalStandingsLaLiga=getStandingsFromAPI(params,"La Liga");
+        externalStandingsPremier =getStandingsFromAPI(params,"Premier League");
 
         GradientDrawable gd = new GradientDrawable();
         gd.setColor(Color.TRANSPARENT);  // Color de fondo del LinearLayout
@@ -54,10 +61,7 @@ public class SlideshowFragment extends Fragment {
 
 
 
-        spinnerYears = rootView.findViewById(R.id.spinnerYears);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.seasons_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerYears.setAdapter(adapter);
+
         spinnerCompetitions = rootView.findViewById(R.id.spinnerCompetitions);
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.competi_array, android.R.layout.simple_spinner_item);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -85,26 +89,29 @@ public class SlideshowFragment extends Fragment {
 
     private void tratatuSpinner( View rootView) {
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
-
-
         linearLayout.removeAllViews();
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         params.setMargins(0, 20, 0, 0);
-        String urtea= spinnerYears.getSelectedItem().toString().split("-")[0];
+
         String competi = spinnerCompetitions.getSelectedItem().toString();
 
 
-        ranking= filterJSONStandings(MainActivity.getGetAllStandings(),urtea,competi);
+        switch (competi){
+            case("La Liga"):
+                ranking=filterCurrentJSONStandings(externalStandingsLaLiga);
+            case("Premier League"):
+                ranking=filterCurrentJSONStandings(externalStandingsPremier);
+        }
+
         printStanding(ranking);
     }
 
-    public List<Standing> filterJSONStandings(List<Proba> allStandings, String urtea, String competi){
+
+    public List<Standing> filterCurrentJSONStandings(List<Proba> allStandings){
         League league = allStandings.stream()
-                .filter(m -> m.getLeague().getSeason() == Integer.parseInt(urtea))
-                .filter(m->m.getLeague().getName().equals(competi))
                 .findFirst()
                 .map(Proba::getLeague)
                 .orElse(null);
@@ -118,6 +125,16 @@ public class SlideshowFragment extends Fragment {
             }
         }
         return st;
+    }
+    private List<Proba> getStandingsFromAPI(LinearLayout.LayoutParams params, String competi) {
+        CompletableFuture<Proba[]> futureStandings = DataAccess.getStandingsFromAPI(competi);
+        futureStandings.join();
+        Proba[] allStandings = futureStandings.getNow(null);
+        if (allStandings != null) {
+            return Arrays.asList(allStandings);
+        } else {
+            return Arrays.asList(new Proba[0]); // errore kasua
+        }
     }
 
     private void printStanding(List<Standing> ranking) {

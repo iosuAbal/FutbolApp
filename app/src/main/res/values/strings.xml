@@ -11,7 +11,8 @@
     <string name="next">Next Matches</string>
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_slideshow">Past Standings</string>
+    <string name="menu_currentSt">Current Standings</string>
     <string name="loadAll">Load all Matches</string>
     <string-array name="seasons_array">
         <item>2021-2022</item>

@@ -1,6 +1,5 @@
 package com.example.futbolapp.gureKlaseak;
 
-import io.realm.RealmObject;
 
 public class Home {
     private int id;

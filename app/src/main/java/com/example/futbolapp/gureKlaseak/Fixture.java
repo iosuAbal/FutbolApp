@@ -1,11 +1,8 @@
 package com.example.futbolapp.gureKlaseak;
 
-import io.realm.Realm;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 public class Fixture{
-    @PrimaryKey
+
     private int id;
     private String referee;
     private String timezone;
