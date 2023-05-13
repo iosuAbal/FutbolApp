@@ -74,7 +74,7 @@ public class DataAccess {
                     Gson gson = new Gson();
                     Match[] partidoak = gson.fromJson(jsonArr.toString(), Match[].class);
                     System.out.println("PARTIDOAK" + partidoak.toString());
-                    partidoakOrdenatuta = ordenarPartidosPorFecha(partidoak);
+                    partidoakOrdenatuta = ordenarPartidosPorFechaYJornada(partidoak);
                     future.complete(partidoakOrdenatuta);
                 } catch (JSONException e) {
                     System.out.println("Response ok but JSON ERROR");
@@ -96,7 +96,7 @@ public class DataAccess {
                 .filter(m -> m.getLeague().getSeason()==(Integer.parseInt(urtea)))
                 .filter(m->m.getLeague().getName().equals(competi))
                 .collect(Collectors.toList());
-        return Arrays.asList(ordenarPartidosPorFecha(matches2020.toArray(new Match[0])));
+        return Arrays.asList(ordenarPartidosPorFechaYJornada(matches2020.toArray(new Match[0])));
 
     }
     public static List<Standing> getStandingsFromJson(String urtea,String competi) throws IOException {
@@ -143,6 +143,41 @@ public class DataAccess {
                     return -1;
                 } else {
                     return 0;
+                }
+            } catch (ParseException e) {
+                // Manejar la excepción en caso de que la cadena no se pueda analizar
+                e.printStackTrace();
+            }
+            return 0;
+        };
+
+        // Convierte el arreglo en una lista para poder ordenarlo
+        List<Match> listaPartidos = Arrays.asList(partidos);
+
+        // Ordena la lista de partidos utilizando el comparador personalizado
+        Collections.sort(listaPartidos, comparador);
+
+        // Convierte la lista ordenada de vuelta a un arreglo y devuélvela
+        return listaPartidos.toArray(new Match[0]);
+    }
+
+    //Sort by matchday and date
+    public static Match[] ordenarPartidosPorFechaYJornada(Match[] partidos) {
+        // Crea un nuevo formato de fecha para analizar las cadenas de fecha
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        // Crea un nuevo comparador para ordenar los partidos de más reciente a más antiguo
+        Comparator<Match> comparador = (partido1, partido2) -> {
+            try {
+                Date fecha1 = formato.parse(partido1.getFixture().getDate());
+                Date fecha2 = formato.parse(partido2.getFixture().getDate());
+                int matchDay1 = Integer.parseInt(partido1.getLeague().getRound().split(" ")[3]);
+                int matchDay2 = Integer.parseInt(partido2.getLeague().getRound().split(" ")[3]);
+                if (matchDay1 > matchDay2) {
+                    return 1;
+                } else if (matchDay1 < matchDay2) {
+                    return -1;
+                } else {
+                    return fecha1.compareTo(fecha2);
                 }
             } catch (ParseException e) {
                 // Manejar la excepción en caso de que la cadena no se pueda analizar
