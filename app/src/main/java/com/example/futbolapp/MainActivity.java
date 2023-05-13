@@ -86,10 +86,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static LinearLayout printMatch(LinearLayout linearLayout, Context context, LinearLayout.LayoutParams params, Match partido, Boolean finished) {
-        /*String result= partido.getTeams().getHome().getName()+" "+ partido.getScore().getFulltime().getHome()
-                +" - "+
-                partido.getScore().getFulltime().getAway()+"  "+ partido.getTeams().getAway().getName();*/
-
         //Pantailaren zabalera lortu
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
@@ -222,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
             LinearLayout liveLayout = null;
 
             boolean liveDago = partido.getFixture().getStatus().getElapsed() !=null &&
-                    partido.getFixture().getStatus().getElapsed()<=90;
+                    partido.getFixture().getStatus().getElapsed()<90;
             //Live badago partidoa (probetarako true)
             if (liveDago){
 

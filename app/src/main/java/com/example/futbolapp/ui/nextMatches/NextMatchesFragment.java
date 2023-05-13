@@ -59,7 +59,7 @@ public class NextMatchesFragment extends Fragment {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
                 params.setMargins(0, 20, 0, 0);
-                Match allMatches[] = null;
+                List<Match> allMatches= null;
                 switch (competi){
                     case "La Liga":
                         allMatches = HomeFragment.getPartidoakLaLiga();
@@ -68,7 +68,7 @@ public class NextMatchesFragment extends Fragment {
                         allMatches = HomeFragment.getPartidoakPremier();
 
                 }
-                List<Match> partidoak = Arrays.stream(allMatches)
+                List<Match> partidoak = allMatches.stream()
                         .filter(m -> {
                             String fechaPartidoStr = m.getFixture().getDate();
                             OffsetDateTime fechaPartido = OffsetDateTime.parse(fechaPartidoStr);

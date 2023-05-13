@@ -6,6 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
+    <Button
+        android:id="@+id/buttonLoad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="113dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="114dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/loadAll"
+        android:onClick="onClickMyButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/myScrollView" />
+
     <TextView
         android:id="@+id/text_home"
         android:layout_width="match_parent"
@@ -22,7 +37,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.09" />
+        app:layout_constraintVertical_bias="0.068" />
 
     <Spinner
         android:id="@+id/spinnerCompetitions"
@@ -34,16 +49,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_home"
-        app:layout_constraintVertical_bias="0.064" />
+        app:layout_constraintVertical_bias="0.034" />
 
     <ScrollView
         android:id="@+id/myScrollView"
         android:layout_width="369dp"
         android:layout_height="460dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="244dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="27dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="300dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="150dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
