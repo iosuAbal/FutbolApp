@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.futbolapp.DataAccess;
+import com.example.futbolapp.MainActivity;
 import com.example.futbolapp.R;
 import com.example.futbolapp.databinding.FragmentSlideshowBinding;
 import com.example.futbolapp.gureKlaseak.League;
@@ -37,28 +38,19 @@ public class CurrentStandingsFragment extends Fragment {
 
     private FragmentSlideshowBinding binding;
     private List<Standing> ranking;
-    private List<Proba> externalStandingsLaLiga;
-    private List<Proba> externalStandingsPremier;
+
 
     private Spinner spinnerCompetitions;
     private LinearLayout linearLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_slideshow, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_currentstandings, container, false);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         params.setMargins(0, 20, 0, 0);
-        externalStandingsLaLiga=getStandingsFromAPI(params,"La Liga");
-        externalStandingsPremier =getStandingsFromAPI(params,"Premier League");
-
-        GradientDrawable gd = new GradientDrawable();
-        gd.setColor(Color.TRANSPARENT);  // Color de fondo del LinearLayout
-        gd.setStroke(2, Color.BLACK);  // Ancho y color del borde
-        gd.setCornerRadius(30);  // Radio de los bordes redondeados
-
 
 
 
@@ -66,7 +58,6 @@ public class CurrentStandingsFragment extends Fragment {
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.competi_array, android.R.layout.simple_spinner_item);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCompetitions.setAdapter(adapter2);
-        spinnerCompetitions.setBackground(gd);
         spinnerCompetitions.setGravity(Gravity.CENTER_HORIZONTAL);
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
         //TableLayout tableLayout = createTableAndMainRow();
@@ -101,11 +92,12 @@ public class CurrentStandingsFragment extends Fragment {
 
         switch (competi){
             case("La Liga"):
-                ranking=filterCurrentJSONStandings(externalStandingsLaLiga);
+                ranking=filterCurrentJSONStandings(MainActivity.getExternalStandingsLaLiga());
+                break;
             case("Premier League"):
-                ranking=filterCurrentJSONStandings(externalStandingsPremier);
+                ranking=filterCurrentJSONStandings(MainActivity.getExternalStandingsPremier());
+                break;
         }
-
         printStanding(ranking);
     }
 
@@ -126,23 +118,14 @@ public class CurrentStandingsFragment extends Fragment {
         }
         return st;
     }
-    private List<Proba> getStandingsFromAPI(LinearLayout.LayoutParams params, String competi) {
-        CompletableFuture<Proba[]> futureStandings = DataAccess.getStandingsFromAPI(competi);
-        futureStandings.join();
-        Proba[] allStandings = futureStandings.getNow(null);
-        if (allStandings != null) {
-            return Arrays.asList(allStandings);
-        } else {
-            return Arrays.asList(new Proba[0]); // errore kasua
-        }
-    }
+
 
     private void printStanding(List<Standing> ranking) {
-        //String result=s.getRank()+" "+s.getTeam().getName()+"    "+s.getPoints();
-        //System.out.println(result);
 
-        // Crear el TableLayout
+
+
         TableRow tableMainRow = new TableRow(getContext());
+
         tableMainRow.setLayoutParams(new TableLayout.LayoutParams(
                 TableLayout.LayoutParams.MATCH_PARENT,
                 TableLayout.LayoutParams.WRAP_CONTENT
@@ -157,24 +140,24 @@ public class CurrentStandingsFragment extends Fragment {
         empty2.setPadding(10, 0, 10, 0);
         tableMainRow.addView(empty2);
         TextView teamName = new TextView(getContext());
-        teamName.setText("Team");
+        teamName.setText("     Team");
         teamName.setPadding(10, 0, 10, 0);
         teamName.setTextSize(15);
         tableMainRow.addView(teamName);
         TextView playedGames = new TextView(getContext());
-        playedGames.setText("Games");
+        playedGames.setText("      Games");
         playedGames.setPadding(10, 0, 10, 0);
         playedGames.setTextSize(15);
         //playedGames.setPadding(10, 10, 10, 10);
         tableMainRow.addView(playedGames);
         TextView won = new TextView(getContext());
-        won.setText("W");
+        won.setText("     W");
         won.setPadding(10, 0, 10, 0);
         won.setTextSize(15);
         //won.setPadding(10, 10, 10, 10);
         tableMainRow.addView(won);
         TextView draw = new TextView(getContext());
-        draw.setText("D");
+        draw.setText("     D");
         draw.setPadding(10, 0, 10, 0);
         draw.setTextSize(15);
         //draw.setPadding(10, 10, 10, 10);
@@ -186,13 +169,13 @@ public class CurrentStandingsFragment extends Fragment {
         //lost.setPadding(10, 10, 10, 10);
         tableMainRow.addView(lost);
         TextView goalDifference = new TextView(getContext());
-        goalDifference.setText("Diff");
+        goalDifference.setText("     Diff");
         goalDifference.setPadding(10, 0, 10, 0);
         goalDifference.setTextSize(15);
         //goalDifference.setPadding(10, 10, 10, 10);
         tableMainRow.addView(goalDifference);
         TextView points = new TextView(getContext());
-        points.setText("P");
+        points.setText("     P");
         points.setPadding(10, 0, 10, 0);
         points.setTextSize(15);
         points.setTypeface(null, Typeface.BOLD);

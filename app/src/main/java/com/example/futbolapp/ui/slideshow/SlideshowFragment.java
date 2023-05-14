@@ -47,10 +47,7 @@ public class SlideshowFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_slideshow, container, false);
 
 
-        GradientDrawable gd = new GradientDrawable();
-        gd.setColor(Color.TRANSPARENT);  // Color de fondo del LinearLayout
-        gd.setStroke(2, Color.BLACK);  // Ancho y color del borde
-        gd.setCornerRadius(30);  // Radio de los bordes redondeados
+
 
 
 
@@ -62,11 +59,21 @@ public class SlideshowFragment extends Fragment {
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.competi_array, android.R.layout.simple_spinner_item);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCompetitions.setAdapter(adapter2);
-        spinnerCompetitions.setBackground(gd);
         spinnerCompetitions.setGravity(Gravity.CENTER_HORIZONTAL);
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
-        //TableLayout tableLayout = createTableAndMainRow();
 
+
+        spinnerYears.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                tratatuSpinner(rootView);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         spinnerCompetitions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -199,7 +206,7 @@ public class SlideshowFragment extends Fragment {
             rank.setTextSize(15);
             tableRow.addView(rank);
             ImageView homePic = new ImageView(getContext());
-            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(100,100);
+            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(100,115);
             //params.gravity= Gravity.CENTER;
             homePic.setLayoutParams(imageParams);
             String homeURL = s.getTeam().getLogo();

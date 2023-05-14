@@ -48,7 +48,7 @@ public class DataAccess {
 
     public static CompletableFuture<Proba[]> getStandingsFromAPI(String league) {
         CompletableFuture<Proba[]> future = new CompletableFuture<>();
-
+        System.out.println("REQUEST EGINDA");
         String leagueId = String.valueOf(ApiMap.getValueByName(league));
 
         OkHttpClient client = new OkHttpClient();
@@ -91,7 +91,7 @@ public class DataAccess {
         CompletableFuture<Match[]> future = new CompletableFuture<>();
 
         String leagueId = String.valueOf(ApiMap.getValueByName(league));
-
+        System.out.println("REQUEST EGINDA");
         OkHttpClient client = new OkHttpClient();
         String url = "https://v3.football.api-sports.io/fixtures?league=" + leagueId + "&season=2022";
 

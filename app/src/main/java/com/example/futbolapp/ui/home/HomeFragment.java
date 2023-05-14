@@ -37,21 +37,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private Button buttonLoad;
 
 
-    private static List<Match> partidoakLaLiga;
 
-
-    private static List<Match>  partidoakPremier;
 
     private Spinner spinnerCompetitions;
     private View  rootView;
 
-    public static List<Match>  getPartidoakLaLiga() {
-        return partidoakLaLiga;
-    }
 
-    public static List<Match>  getPartidoakPremier() {
-        return partidoakPremier;
-    }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
@@ -66,15 +57,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.competi_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCompetitions.setAdapter(adapter);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(0, 20, 0, 0);
 
 
-        partidoakLaLiga=getMatchesFromAPI(params, "La Liga");
-        partidoakPremier=getMatchesFromAPI(params, "Premier League");
+
+
 
 
         spinnerCompetitions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -103,12 +89,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         List<Match> filtratuta;
         switch (competi){
             case "La Liga" :
-                filtratuta=filterPastMatches(partidoakLaLiga);
+                filtratuta=filterPastMatches(MainActivity.getPartidoakLaLiga());
                 Collections.reverse(filtratuta);
                 printMatches(params, filtratuta);
                 break;
             case "Premier League":
-                filtratuta=filterPastMatches(partidoakPremier);
+                filtratuta=filterPastMatches(MainActivity.getPartidoakPremier());
                 Collections.reverse(filtratuta);
                 printMatches(params,filtratuta);
                 break;
@@ -130,12 +116,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         List<Match> filtratuta;
         switch ( competi){
             case "La Liga" :
-                filtratuta = filterMatches(partidoakLaLiga);
+                filtratuta = filterMatches(MainActivity.getPartidoakLaLiga());
                 Collections.reverse(filtratuta);
                 printMatches(params, filtratuta);
                 break;
             case "Premier League":
-                filtratuta = filterMatches(partidoakPremier);
+                filtratuta = filterMatches(MainActivity.getPartidoakPremier());
                 Collections.reverse(filtratuta);
                 printMatches(params, filtratuta);
                 break;
@@ -143,16 +129,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private List<Match> getMatchesFromAPI(LinearLayout.LayoutParams params, String competi) {
-        CompletableFuture<Match[]> futurePartidoak = DataAccess.getMatchesFromAPI(competi);
-        futurePartidoak.join();
-        Match[] allMatches = futurePartidoak.getNow(null);
-        if (allMatches != null) {
-            return Arrays.asList(allMatches);
-        } else {
-            return Arrays.asList(new Match[0]); // errore kasua
-        }
-    }
+
     @NonNull
     private static List<Match> filterMatches(List<Match>  allMatches) {
         Calendar cal = Calendar.getInstance();
