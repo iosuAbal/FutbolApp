@@ -62,10 +62,10 @@ public class NextMatchesFragment extends Fragment {
                 List<Match> allMatches= null;
                 switch (competi){
                     case "La Liga":
-                        allMatches = HomeFragment.getPartidoakLaLiga();
+                        allMatches = MainActivity.getPartidoakLaLiga();
                         break;
                     case "Premier League":
-                        allMatches = HomeFragment.getPartidoakPremier();
+                        allMatches = MainActivity.getPartidoakPremier();
 
                 }
                 List<Match> partidoak = allMatches.stream()

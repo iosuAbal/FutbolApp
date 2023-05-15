@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,7 +30,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,11 +42,32 @@ public class MainActivity extends AppCompatActivity {
     private static int previousMatchDay = -1;
 
 
+    private static List<Proba> externalStandingsLaLiga;
+    private static List<Proba> externalStandingsPremier;
 
     private static List<Match> allJSONMatches;
+    private static List<Match> partidoakLaLiga;
+
+
+    private static List<Match>  partidoakPremier;
+
+    public static List<Match>  getPartidoakLaLiga() {
+        return partidoakLaLiga;
+    }
+
+    public static List<Match>  getPartidoakPremier() {
+        return partidoakPremier;
+    }
 
     public static List<Match> getAllJSONMatches() {
         return allJSONMatches;
+    }
+    public static List<Proba> getExternalStandingsLaLiga() {
+        return externalStandingsLaLiga;
+    }
+
+    public static List<Proba> getExternalStandingsPremier() {
+        return externalStandingsPremier;
     }
 
 
@@ -60,9 +84,18 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(0, 20, 0, 0);
         try {
             allJSONMatches=DataAccess.loadMatchesFromJSON();
             allJSONStandings=DataAccess.loadStandingsFromJSON();
+            partidoakLaLiga=getMatchesFromAPI( params,"La Liga");
+            partidoakPremier=getMatchesFromAPI( params,"Premier League");
+            externalStandingsLaLiga=getStandingsFromAPI(params,"La Liga");
+            externalStandingsPremier =getStandingsFromAPI(params,"Premier League");
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
@@ -100,6 +133,27 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
+    private List<Match> getMatchesFromAPI(LinearLayout.LayoutParams params, String competi) {
+        CompletableFuture<Match[]> futurePartidoak = DataAccess.getMatchesFromAPI(competi);
+        futurePartidoak.join();
+        Match[] allMatches = futurePartidoak.getNow(null);
+        if (allMatches != null) {
+            return Arrays.asList(allMatches);
+        } else {
+            return Arrays.asList(new Match[0]); // errore kasua
+        }
+    }
+    private List<Proba> getStandingsFromAPI(LinearLayout.LayoutParams params, String competi) {
+        CompletableFuture<Proba[]> futureStandings = DataAccess.getStandingsFromAPI(competi);
+        futureStandings.join();
+        Proba[] allStandings = futureStandings.getNow(null);
+        if (allStandings != null) {
+            System.out.println("All standings of "+competi+allStandings);
+            return Arrays.asList(allStandings);
+        } else {
+            return Arrays.asList(new Proba[0]); // errore kasua
+        }
+    }
     public static LinearLayout printMatch(LinearLayout linearLayout, Context context, LinearLayout.LayoutParams params, Match partido, Boolean finished) {
         //Pantailaren zabalera lortu
         DisplayMetrics displayMetrics = new DisplayMetrics();
