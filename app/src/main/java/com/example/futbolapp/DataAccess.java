@@ -118,7 +118,7 @@ public class DataAccess {
                     Gson gson = new Gson();
                     Match[] partidoak = gson.fromJson(jsonArr.toString(), Match[].class);
                     System.out.println("PARTIDOAK" + partidoak.toString());
-                    partidoakOrdenatuta = ordenarPartidosPorFecha(partidoak);
+                    partidoakOrdenatuta = ordenarPartidosPorFechaYJornada(partidoak);
                     future.complete(partidoakOrdenatuta);
                 } catch (JSONException e) {
                     System.out.println("Response ok but JSON ERROR");
@@ -150,7 +150,7 @@ public class DataAccess {
 
                 Match[] matches = gson.fromJson(jsonString, Match[].class);
 
-                return Arrays.asList(ordenarPartidosPorFecha(matches));
+                return Arrays.asList(ordenarPartidosPorFechaYJornada(matches));
             }
         };
 
@@ -230,6 +230,36 @@ public class DataAccess {
         Collections.sort(listaPartidos, comparador);
 
         // Convierte la lista ordenada de vuelta a un arreglo y devuélvela
+        return listaPartidos.toArray(new Match[0]);
+    }
+    public static Match[] ordenarPartidosPorFechaYJornada(Match[] partidos) {
+
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        Comparator<Match> comparador = (partido1, partido2) -> {
+            try {
+                Date fecha1 = formato.parse(partido1.getFixture().getDate());
+                Date fecha2 = formato.parse(partido2.getFixture().getDate());
+                int matchDay1 = Integer.parseInt(partido1.getLeague().getRound().split(" ")[3]);
+                int matchDay2 = Integer.parseInt(partido2.getLeague().getRound().split(" ")[3]);
+                if (matchDay1 > matchDay2) {
+                    return 1;
+                } else if (matchDay1 < matchDay2) {
+                    return -1;
+                } else {
+                    return fecha1.compareTo(fecha2);
+                }
+            } catch (ParseException e) {
+
+                e.printStackTrace();
+            }
+            return 0;
+        };
+
+        List<Match> listaPartidos = Arrays.asList(partidos);
+
+        Collections.sort(listaPartidos, comparador);
+
         return listaPartidos.toArray(new Match[0]);
     }
 }

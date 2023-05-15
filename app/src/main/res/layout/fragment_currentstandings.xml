@@ -4,45 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.standings.CurrentStandingsFragment">
-
+    tools:context=".ui.slideshow.SlideshowFragment">
 
     <Spinner
         android:id="@+id/spinnerCompetitions"
-        android:layout_width="182dp"
-        android:layout_height="54dp"
+        android:layout_width="245dp"
+        android:layout_height="48dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="100dp"
         android:background="@drawable/spinner_border"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.873"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:id="@+id/myScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="180dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="381dp"
+        android:layout_height="420dp"
+        android:layout_marginTop="104dp"
+        android:layout_marginEnd="4dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/myLinearLayout"
             android:layout_width="410dp"
-            android:layout_height="636dp"
+            android:layout_height="600dp"
             android:layout_marginTop="14dp"
             android:layout_marginEnd="1dp"
             android:layout_marginBottom="1dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinnerCompetitions">
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:layout_width="match_parent"

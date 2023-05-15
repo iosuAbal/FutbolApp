@@ -3,6 +3,7 @@ package com.example.futbolapp;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -13,6 +14,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,11 +28,13 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.futbolapp.databinding.ActivityMainBinding;
 import com.example.futbolapp.gureKlaseak.Match;
 import com.example.futbolapp.gureKlaseak.Proba;
+import com.example.futbolapp.gureKlaseak.Standing;
 import com.google.android.material.navigation.NavigationView;
 
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -237,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (finished){
             //Emaitza lortu
-            String score = partido.getScore().getFulltime().getHome()+" - "+ partido.getScore().getFulltime().getAway();
+            String score = partido.getGoals().getHome()+" - "+ partido.getGoals().getAway();
             //Emaitzaren textView sortu
             TextView scoreView = new TextView(context);
             scoreView.setTextSize(50);
@@ -292,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
             if (liveDago){
 
                 //Emaitza lortu
-                String score = partido.getScore().getFulltime().getHome()+" - "+ partido.getScore().getFulltime().getAway();
+                String score = partido.getGoals().getHome()+" - "+ partido.getGoals().getAway();
 
                 //Emaitzaren textView sortu
                 TextView scoreView = new TextView(context);
@@ -349,6 +354,9 @@ public class MainActivity extends AppCompatActivity {
                 String date1 = partido.getFixture().getDate().split("T")[0];
                 String date2 = partido.getFixture().getDate().split("T")[1];
                 String date3 = date2.split("\\+" )[0];
+                int hour = Integer.parseInt(date3.split(":")[0]);
+                hour = hour+2;
+                date3 = hour+":"+date3.split(":")[1];
 
                 //Dataren textView sortu
                 TextView dateView = new TextView(context);
@@ -451,6 +459,151 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    public static TableLayout printStanding(Context context, List<Standing> ranking){
+
+        TableRow tableMainRow = new TableRow(context);
+        tableMainRow.setLayoutParams(new TableLayout.LayoutParams(
+                TableLayout.LayoutParams.MATCH_PARENT,
+                TableLayout.LayoutParams.WRAP_CONTENT
+        ));
+        tableMainRow.setGravity(Gravity.CENTER_HORIZONTAL);
+        TextView empty = new TextView(context);
+        empty.setText("");
+        empty.setPadding(10, 0, 10, 0);
+        tableMainRow.addView(empty);
+        TextView empty2 = new TextView(context);
+        empty2.setText("");
+        empty2.setPadding(10, 0, 10, 0);
+        tableMainRow.addView(empty2);
+        TextView teamName = new TextView(context);
+        teamName.setText("Team");
+        teamName.setPadding(10, 0, 10, 0);
+        teamName.setTextSize(15);
+        tableMainRow.addView(teamName);
+        TextView playedGames = new TextView(context);
+        playedGames.setText("Games");
+        playedGames.setPadding(10, 0, 10, 0);
+        playedGames.setTextSize(15);
+        //playedGames.setPadding(10, 10, 10, 10);
+        tableMainRow.addView(playedGames);
+        TextView won = new TextView(context);
+        won.setText("W");
+        won.setPadding(10, 0, 10, 0);
+        won.setTextSize(15);
+        //won.setPadding(10, 10, 10, 10);
+        tableMainRow.addView(won);
+        TextView draw = new TextView(context);
+        draw.setText("D");
+        draw.setPadding(10, 0, 10, 0);
+        draw.setTextSize(15);
+        //draw.setPadding(10, 10, 10, 10);
+        tableMainRow.addView(draw);
+        TextView lost = new TextView(context);
+        lost.setText("L");
+        lost.setPadding(10, 0, 10, 0);
+        lost.setTextSize(15);
+        //lost.setPadding(10, 10, 10, 10);
+        tableMainRow.addView(lost);
+        TextView goalDifference = new TextView(context);
+        goalDifference.setText("Diff");
+        goalDifference.setPadding(10, 0, 10, 0);
+        goalDifference.setTextSize(15);
+        //goalDifference.setPadding(10, 10, 10, 10);
+        tableMainRow.addView(goalDifference);
+        TextView points = new TextView(context);
+        points.setText("P");
+        points.setPadding(10, 0, 10, 0);
+        points.setTextSize(15);
+        points.setTypeface(null, Typeface.BOLD);
+        //points.setPadding(10, 10, 10, 10);
+        tableMainRow.addView(points);
+        //linearLayout.addView(tableMainRow);
+
+        TableLayout tableLayout = new TableLayout(context);
+        tableLayout.addView(tableMainRow);
+// Crear las filas y las columnas de la tabla
+        for (Standing s : ranking) {
+            TableRow tableRow = new TableRow(context);
+            tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+            tableRow.setLayoutParams(new TableLayout.LayoutParams(
+                    TableLayout.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.WRAP_CONTENT
+            ));
+            TextView rank = new TextView(context);
+            rank.setText(String.valueOf(s.getRank()));
+            rank.setPadding(10, 0, 10, 0);
+            rank.setTextSize(15);
+            tableRow.addView(rank);
+            ImageView homePic = new ImageView(context);
+            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(100,115);
+            //params.gravity= Gravity.CENTER;
+            homePic.setLayoutParams(imageParams);
+            String homeURL = s.getTeam().getLogo();
+            Picasso.get().load(homeURL).into(homePic);
+            LinearLayout homeLayout = new LinearLayout(context);
+            homeLayout.setOrientation(LinearLayout.VERTICAL);
+            homeLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+            homeLayout.setPadding(10, 5, 10, 5);
+            homeLayout.addView(homePic);
+            tableRow.addView(homeLayout);
+            String teamNameString = s.getTeam().getName();
+            String[] teamNameSplit = teamNameString.split(" ");
+            switch (teamNameSplit.length){
+                case 1:
+                    teamNameString = teamNameSplit[0];
+                    break;
+                case 2:
+                    teamNameString = teamNameSplit[0]+"\n"+teamNameSplit[1];
+                    break;
+                case 3:
+                    teamNameString = teamNameSplit[0]+"\n"+teamNameSplit[1]+ " " +teamNameSplit[2];
+                    break;
+            }
+            TextView name = new TextView(context);
+            name.setText(teamNameString);
+            name.setPadding(10, 0, 10, 0);
+            name.setTextSize(15);
+            tableRow.addView(name);
+            int gamesPlayed = s.getAll().getPlayed();
+            int gamesWon = s.getAll().getWin();
+            int gamesDraw = s.getAll().getDraw();
+            int gamesLost = s.getAll().getLose();
+            int goalDiff = s.getGoalsDiff();
+            int pointsEarned = s.getPoints();
+            List<Integer> list = new ArrayList<Integer>();
+            list.add(gamesPlayed);
+            list.add(gamesWon);
+            list.add(gamesDraw);
+            list.add(gamesLost);
+            list.add(goalDiff);
+            list.add(pointsEarned);
+
+            for (int j = 0; j < tableMainRow.getChildCount()-3; j++) {
+                TextView textView = new TextView(context);
+                textView.setText(list.get(j).toString());
+                textView.setTextSize(15);
+                if (j==tableMainRow.getChildCount()-4){
+                    textView.setTypeface(null, Typeface.BOLD);
+                    textView.setPadding(10, 0, 10, 0);
+                }
+                else {
+                    textView.setPadding(10, 0, 10, 0);
+                }
+
+
+                TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(
+                        TableRow.LayoutParams.WRAP_CONTENT,
+                        TableRow.LayoutParams.WRAP_CONTENT
+                );
+
+                tableRow.addView(textView, layoutParams);
+            }
+
+            tableLayout.addView(tableRow);
+        }
+        return tableLayout;
     }
 
 
