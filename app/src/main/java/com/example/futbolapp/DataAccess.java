@@ -2,26 +2,22 @@ package com.example.futbolapp;
 
 
 
-import com.example.futbolapp.gureKlaseak.League;
 import com.example.futbolapp.gureKlaseak.Match;
-import com.example.futbolapp.gureKlaseak.Proba;
-import com.example.futbolapp.gureKlaseak.Standing;
+import com.example.futbolapp.gureKlaseak.StandingResponse;
 import com.example.futbolapp.ui.home.ApiMap;
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,12 +38,11 @@ import okhttp3.Response;
 
 public class DataAccess {
 
-    private static Match[] partidoak;
     private static Match[] partidoakOrdenatuta;
 
 
-    public static CompletableFuture<Proba[]> getStandingsFromAPI(String league) {
-        CompletableFuture<Proba[]> future = new CompletableFuture<>();
+    public static CompletableFuture<StandingResponse[]> getStandingsFromAPI(String league) {
+        CompletableFuture<StandingResponse[]> future = new CompletableFuture<>();
         System.out.println("REQUEST EGINDA");
         String leagueId = String.valueOf(ApiMap.getValueByName(league));
 
@@ -75,7 +70,7 @@ public class DataAccess {
                     JSONObject jsonObject = new JSONObject(json);
                     JSONArray jsonArr = jsonObject.getJSONArray("response");
                     Gson gson = new Gson();
-                    Proba[] standings = gson.fromJson(jsonArr.toString(), Proba[].class);
+                    StandingResponse[] standings = gson.fromJson(jsonArr.toString(), StandingResponse[].class);
 
                     future.complete(standings);
                 } catch (JSONException e) {
@@ -165,10 +160,10 @@ public class DataAccess {
 
 
 
-    public static List<Proba> loadStandingsFromJSON() throws IOException, ExecutionException, InterruptedException {
-        Callable<List<Proba>> callable = new Callable<List<Proba>>() {
+    public static List<StandingResponse> loadStandingsFromJSON() throws IOException, ExecutionException, InterruptedException {
+        Callable<List<StandingResponse>> callable = new Callable<List<StandingResponse>>() {
             @Override
-            public List<Proba> call() throws Exception {
+            public List<StandingResponse> call() throws Exception {
                 URL url = new URL("https://drive.google.com/uc?id=1w1Oa1GDh5Ns7iVrzihxvTbCmJdY7RiMp&export=download");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -183,7 +178,7 @@ public class DataAccess {
 
                 Gson gson = new Gson();
 
-                Proba[] allStandings = gson.fromJson(jsonString, Proba[].class);
+                StandingResponse[] allStandings = gson.fromJson(jsonString, StandingResponse[].class);
 
 
                 return Arrays.asList(allStandings);
@@ -191,47 +186,15 @@ public class DataAccess {
         };
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<List<Proba>> future = executor.submit(callable);
-        List<Proba> result = future.get();
+        Future<List<StandingResponse>> future = executor.submit(callable);
+        List<StandingResponse> result = future.get();
 
         executor.shutdown();
 
         return result;
 
     }
-    public static Match[] ordenarPartidosPorFecha(Match[] partidos) {
-        // Crea un nuevo formato de fecha para analizar las cadenas de fecha
-        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        // Crea un nuevo comparador para ordenar los partidos de más reciente a más antiguo
-        Comparator<Match> comparador = (partido1, partido2) -> {
-            try {
-                //Date fecha1 = formato.parse(partido1.getFixture().getDate());
-                Date fecha2 = formato.parse(partido2.getFixture().getDate());
-                int matchDay1 = Integer.parseInt(partido1.getLeague().getRound().split(" ")[3]);
-                int matchDay2 = Integer.parseInt(partido2.getLeague().getRound().split(" ")[3]);
-                if (matchDay1 > matchDay2) {
-                    return 1;
-                } else if (matchDay1 < matchDay2) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            } catch (ParseException e) {
-                // Manejar la excepción en caso de que la cadena no se pueda analizar
-                e.printStackTrace();
-            }
-            return 0;
-        };
 
-        // Convierte el arreglo en una lista para poder ordenarlo
-        List<Match> listaPartidos = Arrays.asList(partidos);
-
-        // Ordena la lista de partidos utilizando el comparador personalizado
-        Collections.sort(listaPartidos, comparador);
-
-        // Convierte la lista ordenada de vuelta a un arreglo y devuélvela
-        return listaPartidos.toArray(new Match[0]);
-    }
     public static Match[] ordenarPartidosPorFechaYJornada(Match[] partidos) {
 
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");

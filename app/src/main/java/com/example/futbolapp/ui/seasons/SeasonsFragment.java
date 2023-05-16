@@ -42,8 +42,8 @@ public class SeasonsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_seasons, container, false);
 
         GradientDrawable gd = new GradientDrawable();
-        gd.setColor(Color.TRANSPARENT);  // Color de fondo del LinearLayout
-        gd.setStroke(2, Color.BLACK);  // Ancho y color del borde
+        gd.setColor(Color.TRANSPARENT);
+        gd.setStroke(2, Color.BLACK);
         gd.setCornerRadius(30);
 
         spinnerYears = rootView.findViewById(R.id.spinnerYears);
@@ -69,7 +69,6 @@ public class SeasonsFragment extends Fragment {
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // No se hace nada si no se selecciona nada
             }
         });
         spinnerCompetitions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -79,7 +78,7 @@ public class SeasonsFragment extends Fragment {
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // No se hace nada si no se selecciona nada
+
             }
         });
         return rootView;
@@ -117,7 +116,7 @@ public class SeasonsFragment extends Fragment {
                 .filter(m -> m.getLeague().getSeason() == (Integer.parseInt(urtea)))
                 .filter(m -> m.getLeague().getName().equals(competi))
                 .collect(Collectors.toList());
-        return Arrays.asList(DataAccess.ordenarPartidosPorFecha(filteredMatches.toArray(new Match[0])));
+        return filteredMatches;
     }
 
 

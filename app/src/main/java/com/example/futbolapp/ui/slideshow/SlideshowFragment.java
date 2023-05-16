@@ -1,8 +1,5 @@
 package com.example.futbolapp.ui.slideshow;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -10,26 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.futbolapp.DataAccess;
 import com.example.futbolapp.MainActivity;
 import com.example.futbolapp.R;
 import com.example.futbolapp.databinding.FragmentSlideshowBinding;
 import com.example.futbolapp.gureKlaseak.League;
-import com.example.futbolapp.gureKlaseak.Proba;
+import com.example.futbolapp.gureKlaseak.StandingResponse;
 import com.example.futbolapp.gureKlaseak.Standing;
-import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,12 +98,12 @@ public class SlideshowFragment extends Fragment {
         linearLayout.addView(MainActivity.printStanding(getContext(),ranking));
     }
 
-    public List<Standing> filterJSONStandings(List<Proba> allStandings, String urtea, String competi){
+    public List<Standing> filterJSONStandings(List<StandingResponse> allStandings, String urtea, String competi){
         League league = allStandings.stream()
                 .filter(m -> m.getLeague().getSeason() == Integer.parseInt(urtea))
                 .filter(m->m.getLeague().getName().equals(competi))
                 .findFirst()
-                .map(Proba::getLeague)
+                .map(StandingResponse::getLeague)
                 .orElse(null);
 
         List<Standing> st = new ArrayList<>();

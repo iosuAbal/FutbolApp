@@ -1,6 +1,6 @@
 package com.example.futbolapp.gureKlaseak;
 
-public class Proba {
+public class StandingResponse {
     private League league;
 
     public League getLeague() {

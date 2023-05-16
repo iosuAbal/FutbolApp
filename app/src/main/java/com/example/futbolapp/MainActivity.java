@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -28,7 +27,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.futbolapp.databinding.ActivityMainBinding;
 import com.example.futbolapp.gureKlaseak.Match;
-import com.example.futbolapp.gureKlaseak.Proba;
+import com.example.futbolapp.gureKlaseak.StandingResponse;
 import com.example.futbolapp.gureKlaseak.Standing;
 import com.google.android.material.navigation.NavigationView;
 
@@ -48,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private static int previousMatchDay = -1;
 
 
-    private static List<Proba> externalStandingsLaLiga;
-    private static List<Proba> externalStandingsPremier;
+    private static List<StandingResponse> externalStandingsLaLiga;
+    private static List<StandingResponse> externalStandingsPremier;
 
     private static List<Match> allJSONMatches;
     private static List<Match> partidoakLaLiga;
@@ -68,18 +67,18 @@ public class MainActivity extends AppCompatActivity {
     public static List<Match> getAllJSONMatches() {
         return allJSONMatches;
     }
-    public static List<Proba> getExternalStandingsLaLiga() {
+    public static List<StandingResponse> getExternalStandingsLaLiga() {
         return externalStandingsLaLiga;
     }
 
-    public static List<Proba> getExternalStandingsPremier() {
+    public static List<StandingResponse> getExternalStandingsPremier() {
         return externalStandingsPremier;
     }
 
 
 
-    private static List<Proba> allJSONStandings;
-    public static List<Proba> getGetAllStandings() {
+    private static List<StandingResponse> allJSONStandings;
+    public static List<StandingResponse> getGetAllStandings() {
         return allJSONStandings;
     }
 
@@ -150,15 +149,15 @@ public class MainActivity extends AppCompatActivity {
             return Arrays.asList(new Match[0]); // errore kasua
         }
     }
-    private List<Proba> getStandingsFromAPI(LinearLayout.LayoutParams params, String competi) {
-        CompletableFuture<Proba[]> futureStandings = DataAccess.getStandingsFromAPI(competi);
+    private List<StandingResponse> getStandingsFromAPI(LinearLayout.LayoutParams params, String competi) {
+        CompletableFuture<StandingResponse[]> futureStandings = DataAccess.getStandingsFromAPI(competi);
         futureStandings.join();
-        Proba[] allStandings = futureStandings.getNow(null);
+        StandingResponse[] allStandings = futureStandings.getNow(null);
         if (allStandings != null) {
             System.out.println("All standings of "+competi+allStandings);
             return Arrays.asList(allStandings);
         } else {
-            return Arrays.asList(new Proba[0]); // errore kasua
+            return Arrays.asList(new StandingResponse[0]); // errore kasua
         }
     }
     public static LinearLayout printMatch(LinearLayout linearLayout, Context context, LinearLayout.LayoutParams params, Match partido, Boolean finished) {
