@@ -68,16 +68,7 @@ public class NextMatchesFragment extends Fragment {
                         allMatches = MainActivity.getPartidoakPremier();
 
                 }
-                List<Match> partidoak = allMatches.stream()
-                        .filter(m -> {
-                            String fechaPartidoStr = m.getFixture().getDate();
-                            OffsetDateTime fechaPartido = OffsetDateTime.parse(fechaPartidoStr);
-                            OffsetDateTime fechaActual = OffsetDateTime.now();
-                            return fechaPartido.isAfter(fechaActual);
-                        })
-                        .filter(m->m.getLeague().getName().equals(competi))
-                        .collect(Collectors.toList());
-
+                List<Match> partidoak = filterNewMatches(competi, allMatches);
 
 
                 for (Match partido: partidoak) {
@@ -92,7 +83,19 @@ public class NextMatchesFragment extends Fragment {
         return rootView;
     }
 
-
+    @NonNull
+    private static List<Match> filterNewMatches(String competi, List<Match> allMatches) {
+        List<Match> partidoak = allMatches.stream()
+                .filter(m -> {
+                    String fechaPartidoStr = m.getFixture().getDate();
+                    OffsetDateTime fechaPartido = OffsetDateTime.parse(fechaPartidoStr);
+                    OffsetDateTime fechaActual = OffsetDateTime.now();
+                    return fechaPartido.isAfter(fechaActual);
+                })
+                .filter(m->m.getLeague().getName().equals(competi))
+                .collect(Collectors.toList());
+        return partidoak;
+    }
 
 
 }
