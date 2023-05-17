@@ -14,5 +14,4 @@ public class Goals {
         return away;
     }
 
-    // Constructor, getters y setters
 }

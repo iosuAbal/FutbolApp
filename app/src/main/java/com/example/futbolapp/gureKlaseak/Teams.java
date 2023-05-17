@@ -13,5 +13,4 @@ public class Teams {
         return away;
     }
 
-    // Constructor, getters y setters
 }

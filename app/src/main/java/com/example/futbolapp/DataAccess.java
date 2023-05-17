@@ -88,6 +88,7 @@ public class DataAccess {
         String leagueId = String.valueOf(ApiMap.getValueByName(league));
         System.out.println("REQUEST EGINDA");
         OkHttpClient client = new OkHttpClient();
+        //prestatu urla
         String url = "https://v3.football.api-sports.io/fixtures?league=" + leagueId + "&season=2022";
 
         Request request = new Request.Builder()
@@ -98,25 +99,29 @@ public class DataAccess {
 
         call.enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(Call call, IOException e)  {
+                //erroreren bat badago
                 System.out.println("Error in call");
                 future.completeExceptionally(e);
+
+
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                // ondo badoa
                 String json = response.body().string();
-                System.out.println("Call done " + json);
+                System.out.println("deia eginda " + json);
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     JSONArray jsonArr = jsonObject.getJSONArray("response");
                     Gson gson = new Gson();
                     Match[] partidoak = gson.fromJson(jsonArr.toString(), Match[].class);
                     System.out.println("PARTIDOAK" + partidoak.toString());
-                    partidoakOrdenatuta = ordenarPartidosPorFechaYJornada(partidoak);
+                    partidoakOrdenatuta = ordenatuPartidoak(partidoak);
                     future.complete(partidoakOrdenatuta);
                 } catch (JSONException e) {
-                    System.out.println("Response ok but JSON ERROR");
+                    System.out.println("errorea dago json ean");
                     future.completeExceptionally(e);
                 }
             }
@@ -145,7 +150,7 @@ public class DataAccess {
 
                 Match[] matches = gson.fromJson(jsonString, Match[].class);
 
-                return Arrays.asList(ordenarPartidosPorFechaYJornada(matches));
+                return Arrays.asList(ordenatuPartidoak(matches));
             }
         };
 
@@ -195,14 +200,14 @@ public class DataAccess {
 
     }
 
-    public static Match[] ordenarPartidosPorFechaYJornada(Match[] partidos) {
+    public static Match[] ordenatuPartidoak(Match[] partidos) {
 
-        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat formatoa = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-        Comparator<Match> comparador = (partido1, partido2) -> {
+        Comparator<Match> konparadorea = (partido1, partido2) -> {
             try {
-                Date fecha1 = formato.parse(partido1.getFixture().getDate());
-                Date fecha2 = formato.parse(partido2.getFixture().getDate());
+                Date data1 = formatoa.parse(partido1.getFixture().getDate());
+                Date data2 = formatoa.parse(partido2.getFixture().getDate());
                 int matchDay1 = Integer.parseInt(partido1.getLeague().getRound().split(" ")[3]);
                 int matchDay2 = Integer.parseInt(partido2.getLeague().getRound().split(" ")[3]);
                 if (matchDay1 > matchDay2) {
@@ -210,7 +215,7 @@ public class DataAccess {
                 } else if (matchDay1 < matchDay2) {
                     return -1;
                 } else {
-                    return fecha1.compareTo(fecha2);
+                    return data1.compareTo(data2);
                 }
             } catch (ParseException e) {
 
@@ -221,7 +226,7 @@ public class DataAccess {
 
         List<Match> listaPartidos = Arrays.asList(partidos);
 
-        Collections.sort(listaPartidos, comparador);
+        Collections.sort(listaPartidos, konparadorea);
 
         return listaPartidos.toArray(new Match[0]);
     }

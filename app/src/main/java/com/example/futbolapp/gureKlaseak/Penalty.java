@@ -13,5 +13,4 @@ public class Penalty {
         return away;
     }
 
-    // Constructor, getters y setters
 }

@@ -23,5 +23,4 @@ public class Score {
         return penalty;
     }
 
-    // Constructor, getters y setters
 }

@@ -23,5 +23,4 @@ public class Home {
         return winner;
     }
 
-    // Constructor, getters y setters
 }

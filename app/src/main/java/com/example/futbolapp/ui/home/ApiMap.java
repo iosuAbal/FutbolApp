@@ -4,10 +4,10 @@ public enum ApiMap {
     LA_LIGA("La Liga", 140),
     PREMIER("Premier League", 39);
 
-    private String name;
-    private int value;
+    private final String name;
+    private final int value;
 
-    private ApiMap(String name, int value) {
+    ApiMap(String name, int value) {
         this.name = name;
         this.value = value;
     }

@@ -13,5 +13,4 @@ public class Periods {
         return second;
     }
 
-    // Constructor, getters y setters
 }

@@ -18,5 +18,4 @@ public class Status {
         return elapsed;
     }
 
-    // Constructor, getters y setters
 }

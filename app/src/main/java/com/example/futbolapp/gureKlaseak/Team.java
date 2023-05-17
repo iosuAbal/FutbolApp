@@ -17,5 +17,4 @@ public class Team {
         return logo;
     }
 
-    // Constructor, getters y setters
 }

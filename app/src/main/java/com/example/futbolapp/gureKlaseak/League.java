@@ -16,7 +16,7 @@ public class League {
         return standings;
     }
 
-    private Standing[][] standings;
+    private Standing[][] standings; //hau standings arrayaren barruan beste array bat dagoelako da
 
 
 

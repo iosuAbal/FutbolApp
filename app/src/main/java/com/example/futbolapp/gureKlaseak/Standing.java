@@ -62,7 +62,6 @@ public class Standing {
         return update;
     }
 
-    // Constructor, getters y setters
 }
 
 

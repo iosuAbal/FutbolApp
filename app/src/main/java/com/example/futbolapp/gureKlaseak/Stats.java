@@ -5,7 +5,7 @@ public class Stats {
     private int win;
     private int draw;
     private int lose;
-    private Goals goals;
+    private GoalsStats goals;
 
     public int getPlayed() {
         return played;
@@ -23,9 +23,8 @@ public class Stats {
         return lose;
     }
 
-    public Goals getGoals() {
+    public GoalsStats getGoals() {
         return goals;
     }
 
-    // Constructor, getters y setters
 }

@@ -44,5 +44,4 @@ public class Fixture{
         return status;
     }
 
-    // Constructor, getters y setters
 }

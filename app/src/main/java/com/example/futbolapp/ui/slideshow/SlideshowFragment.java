@@ -17,10 +17,11 @@ import com.example.futbolapp.MainActivity;
 import com.example.futbolapp.R;
 import com.example.futbolapp.databinding.FragmentSlideshowBinding;
 import com.example.futbolapp.gureKlaseak.League;
-import com.example.futbolapp.gureKlaseak.StandingResponse;
 import com.example.futbolapp.gureKlaseak.Standing;
+import com.example.futbolapp.gureKlaseak.StandingResponse;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SlideshowFragment extends Fragment {
@@ -35,11 +36,6 @@ public class SlideshowFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_slideshow, container, false);
-
-
-
-
-
 
         spinnerYears = rootView.findViewById(R.id.spinnerYears);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.seasons_array, android.R.layout.simple_spinner_item);
@@ -109,9 +105,7 @@ public class SlideshowFragment extends Fragment {
         List<Standing> st = new ArrayList<>();
         for (Standing[] standingArr : league.getStandings()) {
             if (standingArr != null && standingArr.length > 0) {
-                for (Standing standing : standingArr) {
-                    st.add(standing);
-                }
+                Collections.addAll(st, standingArr);
             }
         }
         return st;
@@ -122,9 +116,4 @@ public class SlideshowFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
-    /*private TableLayout createTableAndMainRow(){
-
-        return tableLayout;
-    }*/
 }

@@ -13,5 +13,4 @@ public class FullTime {
         return away;
     }
 
-    // Constructor, getters y setters
 }

@@ -18,5 +18,4 @@ public class Venue{
         return city;
     }
 
-    // Constructor, getters y setters
 }

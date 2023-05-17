@@ -14,12 +14,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.futbolapp.MainActivity;
-import com.example.futbolapp.gureKlaseak.Match;
 import com.example.futbolapp.R;
-import com.example.futbolapp.ui.home.HomeFragment;
+import com.example.futbolapp.gureKlaseak.Match;
 
 import java.time.OffsetDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +28,6 @@ public class NextMatchesFragment extends Fragment {
 
 
     private Spinner spinnerCompetitions;
-    private int previousMatchDay = -1;
 
     @Nullable
     @Override
@@ -77,7 +74,6 @@ public class NextMatchesFragment extends Fragment {
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // No se hace nada si no se selecciona nada
             }
         });
         return rootView;

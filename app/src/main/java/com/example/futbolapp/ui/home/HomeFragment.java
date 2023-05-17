@@ -11,23 +11,21 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.futbolapp.DataAccess;
 import com.example.futbolapp.MainActivity;
 import com.example.futbolapp.R;
 import com.example.futbolapp.databinding.FragmentHomeBinding;
 import com.example.futbolapp.gureKlaseak.Match;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
@@ -45,12 +43,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-        rootView = binding.getRoot();
+        rootView = binding.getRoot();//kargatu bista
         linearLayout = rootView.findViewById(R.id.myLinearLayout);
+        //kargatu xml-n definitutako konponenteak
         spinnerCompetitions = rootView.findViewById(R.id.spinnerCompetitions);
         buttonLoad=rootView.findViewById(R.id.buttonLoad);
         buttonLoad.setOnClickListener(this);
@@ -70,6 +68,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                //ez egin ezer
             }
         });
         return rootView;
@@ -100,6 +99,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 break;
 
         }
+        Toast.makeText(getActivity(), "All matches loaded! Please scroll down",
+                Toast.LENGTH_LONG).show();
         buttonLoad.setEnabled(false);
     }
 
@@ -137,16 +138,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
         String month = dateFormat.format(cal.getTime());
         List<Match> unekoPartidoak = allMatches.stream()
-                .filter(m -> m.getFixture().getDate().startsWith(String.valueOf(year) + "-" + (month)))
+                .filter(m -> m.getFixture().getDate().startsWith(year + "-" + (month)))
                 .filter(m -> m.getFixture().getStatus().getElapsed() != null)
                 .collect(Collectors.toList());
         return unekoPartidoak;
     }
     private static List<Match> filterPastMatches(List<Match>  allMatches) {
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH, -1); // Restar 1 mes a la fecha actual
+        cal.add(Calendar.MONTH, -1);
         int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH) + 1; // Sumar 1 porque los meses en Calendar van de 0 a 11
+        int month = cal.get(Calendar.MONTH) + 1; //Hilabeteak 0tik 11ra direalako
 
         List<Match> unekoPartidoak = allMatches.stream()
                 .filter(m -> {
@@ -166,10 +167,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void run() {
                 for (Match m : matches) {
-                    boolean finished=false;
-                    if(m.getFixture().getStatus().getElapsed()!=null && m.getFixture().getStatus().getElapsed()==90){
-                        finished=true;
-                    }
+                    boolean finished= m.getFixture().getStatus().getElapsed() != null && m.getFixture().getStatus().getElapsed() == 90;
                     MainActivity.printMatch(linearLayout, getContext(), params, m, finished);
                 }
             }

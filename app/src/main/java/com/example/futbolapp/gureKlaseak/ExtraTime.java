@@ -13,5 +13,4 @@ public class ExtraTime {
         return away;
     }
 
-    // Constructor, getters y setters
 }

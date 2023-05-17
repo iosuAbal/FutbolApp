@@ -24,5 +24,5 @@ public class Away {
         return winner;
     }
 
-    // Constructor, getters y setters
+
 }

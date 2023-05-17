@@ -1,6 +1,5 @@
 package com.example.futbolapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -17,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -27,15 +27,15 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.futbolapp.databinding.ActivityMainBinding;
 import com.example.futbolapp.gureKlaseak.Match;
-import com.example.futbolapp.gureKlaseak.StandingResponse;
 import com.example.futbolapp.gureKlaseak.Standing;
+import com.example.futbolapp.gureKlaseak.StandingResponse;
 import com.google.android.material.navigation.NavigationView;
-
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -85,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -95,11 +97,14 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         params.setMargins(0, 20, 0, 0);
+
         try {
             allJSONMatches=DataAccess.loadMatchesFromJSON();
             allJSONStandings=DataAccess.loadStandingsFromJSON();
-            partidoakLaLiga=getMatchesFromAPI( params,"La Liga");
-            partidoakPremier=getMatchesFromAPI( params,"Premier League");
+            Toast.makeText(getApplicationContext(), "Getting latest data...",
+                    Toast.LENGTH_LONG).show();
+            partidoakLaLiga=getMatchesFromAPI( "La Liga");
+            partidoakPremier=getMatchesFromAPI( "Premier League");
             externalStandingsLaLiga=getStandingsFromAPI(params,"La Liga");
             externalStandingsPremier =getStandingsFromAPI(params,"Premier League");
         } catch (ExecutionException e) {
@@ -123,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
 
+
     }
 
     @Override
@@ -139,14 +145,16 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    private List<Match> getMatchesFromAPI(LinearLayout.LayoutParams params, String competi) {
+    private List<Match> getMatchesFromAPI(String competi) {
         CompletableFuture<Match[]> futurePartidoak = DataAccess.getMatchesFromAPI(competi);
         futurePartidoak.join();
         Match[] allMatches = futurePartidoak.getNow(null);
         if (allMatches != null) {
             return Arrays.asList(allMatches);
         } else {
-            return Arrays.asList(new Match[0]); // errore kasua
+            Toast.makeText(getApplicationContext(), "Error! No internet connection",
+                    Toast.LENGTH_LONG).show();
+            return Collections.emptyList(); // errore kasua
         }
     }
     private List<StandingResponse> getStandingsFromAPI(LinearLayout.LayoutParams params, String competi) {
@@ -157,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("All standings of "+competi+allStandings);
             return Arrays.asList(allStandings);
         } else {
-            return Arrays.asList(new StandingResponse[0]); // errore kasua
+            return Collections.emptyList(); // errore kasua
         }
     }
     public static LinearLayout printMatch(LinearLayout linearLayout, Context context, LinearLayout.LayoutParams params, Match partido, Boolean finished) {
@@ -387,53 +395,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
-
-
-
-
-
-
-
-
-        /*TextView textView = new TextView(getContext());
-        GradientDrawable shape = new GradientDrawable();
-        shape.setColor(Color.LTGRAY);
-        shape.setCornerRadius(18);
-        textView.setBackground(shape);
-        textView.setTextColor(Color.BLACK);
-        textView.setTypeface(null, Typeface.BOLD);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        textView.setLayoutParams(params);
-        textView.setWidth((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 250,
-                getResources().getDisplayMetrics()));
-        textView.setText(result);*/
-
-
-
-
-
-
-
-        //layoutHorizontal.setBackground(gd);
-
-        //layoutHorizontal.addView(homePic);
-        //layoutHorizontal.addView(homeNameView);
-
-        //layoutHorizontal.addView(awayNameView);
-        //layoutHorizontal.addView(awayPic);
-        //linearLayout.addView(layoutHorizontal);
-        //linearLayout.addView(liveView);
-
-
-
-
-
-
-        //layoutVertical.setGravity(Gravity.CENTER_HORIZONTAL);
-
-
-
-
         //Zenbatgarren jornadakoak diren jarri
         if (previousMatchDay!=currentMatchDay || previousMatchDay==-1) {
             TextView matchDayView = new TextView(context);
@@ -442,25 +403,14 @@ public class MainActivity extends AppCompatActivity {
             matchDayView.setTextSize(20);
             linearLayout.addView(matchDayView);
             previousMatchDay = currentMatchDay;
-            //if ()
+
         }
         linearLayout.addView(layoutVertical);
 
         return linearLayout;
     }
 
-    public static void loadImageInUI(Context context, String imageUrl, ImageView imageView) {
-        if (context != null) {
-            // Ejecutar código en el hilo de la interfaz de usuario
-            ((Activity) context).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    // Cargar la imagen en el ImageView utilizando Picasso
-                    Picasso.get().load(imageUrl).into(imageView);
-                }
-            });
-        }
-    }
+
 
     public static TableLayout printStanding(Context context, List<Standing> ranking){
 
@@ -487,44 +437,36 @@ public class MainActivity extends AppCompatActivity {
         playedGames.setText("Games");
         playedGames.setPadding(10, 0, 10, 0);
         playedGames.setTextSize(15);
-        //playedGames.setPadding(10, 10, 10, 10);
         tableMainRow.addView(playedGames);
         TextView won = new TextView(context);
         won.setText("W");
         won.setPadding(10, 0, 10, 0);
         won.setTextSize(15);
-        //won.setPadding(10, 10, 10, 10);
         tableMainRow.addView(won);
         TextView draw = new TextView(context);
         draw.setText("D");
         draw.setPadding(10, 0, 10, 0);
         draw.setTextSize(15);
-        //draw.setPadding(10, 10, 10, 10);
         tableMainRow.addView(draw);
         TextView lost = new TextView(context);
         lost.setText("L");
         lost.setPadding(10, 0, 10, 0);
         lost.setTextSize(15);
-        //lost.setPadding(10, 10, 10, 10);
         tableMainRow.addView(lost);
         TextView goalDifference = new TextView(context);
         goalDifference.setText("Diff");
         goalDifference.setPadding(10, 0, 10, 0);
         goalDifference.setTextSize(15);
-        //goalDifference.setPadding(10, 10, 10, 10);
         tableMainRow.addView(goalDifference);
         TextView points = new TextView(context);
         points.setText("P");
         points.setPadding(10, 0, 10, 0);
         points.setTextSize(15);
         points.setTypeface(null, Typeface.BOLD);
-        //points.setPadding(10, 10, 10, 10);
         tableMainRow.addView(points);
-        //linearLayout.addView(tableMainRow);
-
         TableLayout tableLayout = new TableLayout(context);
         tableLayout.addView(tableMainRow);
-// Crear las filas y las columnas de la tabla
+// Taularen errenkadak eta ilarak sortu
         for (Standing s : ranking) {
             TableRow tableRow = new TableRow(context);
             tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -539,7 +481,6 @@ public class MainActivity extends AppCompatActivity {
             tableRow.addView(rank);
             ImageView homePic = new ImageView(context);
             LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(100,115);
-            //params.gravity= Gravity.CENTER;
             homePic.setLayoutParams(imageParams);
             String homeURL = s.getTeam().getLogo();
             Picasso.get().load(homeURL).into(homePic);
@@ -606,8 +547,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return tableLayout;
     }
-
-
-
 
 }
